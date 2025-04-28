@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>La Punta Sabrosa-Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@200;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css"
+        integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
+
+    <!-- Estilos de PNotify -->
+    <link href="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/PNotify.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/BrightTheme.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+
+<body>
+    <main class="login-design">
+        <div class="waves">
+            <img src="/image/loginPerson.png" alt="Persona en el diseño de login" />
+        </div>
+        <div class="login">
+            <div class="login-data">
+                <img src="/image/logoLPS.png" alt="Logo de la plataforma" style="width: 300px; height: 180px;" />
+                <h1>Inicio de Sesión</h1>
+                <!-- Formulario de inicio de sesión -->
+                <form th:action="@{/login}" id="login-form" method="post" class="login-form">
+                    <!-- Mensaje de error-->
+                    <div th:if="${param.error}" id="errorMessage" data-message="¡Credenciales incorrectas!"></div>
+                    <div th:if="${param.logout}" id="logoutMessage" data-message="Has cerrado sesión exitosamente">
+                    </div>
+
+                    <div class="datos">
+                        <div class="input-group">
+                            <label class="input-fill">
+                                <input type="email" name="correoelectronico" id="correoelectronico" required />
+                                <span class="input-label">Correo Electrónico</span>
+                                <i class="fas fa-envelope"></i>
+                            </label>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-fill">
+                                <input type="password" name="contrasena" id="contrasena" required />
+                                <span class="input-label">Contraseña</span>
+                                <i class="fas fa-lock"></i>
+                            </label>
+                        </div>
+                    </div>
+                    <input type="submit" value="Iniciar Sesión" class="btn-login" />
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Obtener mensajes de error o cierre de sesión
+            const errorElement = document.getElementById("errorMessage");
+            const logoutElement = document.getElementById("logoutMessage");
+
+            const errorMessage = errorElement ? errorElement.getAttribute("data-message") : null;
+            const logoutMessage = logoutElement ? logoutElement.getAttribute("data-message") : null;
+
+            // Mostrar notificaciones con PNotify
+            if (errorMessage) {
+                PNotify.error({
+                    text: errorMessage,
+                    delay: 3000
+                });
+
+            }
+
+            if (logoutMessage) {
+                PNotify.success({
+                    text: logoutMessage,
+                    delay: 3000
+                });
+
+            }
+
+            if (errorMessage || logoutMessage) {
+                const url = new URL(window.location);
+                url.searchParams.delete("errorMessage");
+                url.searchParams.delete("logoutMessage");
+                window.history.replaceState({}, document.title, url.pathname);
+            }
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+        crossorigin="anonymous"></script>
+
+    <!-- Scripts de PNotify -->
+    <script src="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/PNotify.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/PNotifyButtons.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/PNotifyButtons.css" rel="stylesheet">
+</body>
+
+</html>
