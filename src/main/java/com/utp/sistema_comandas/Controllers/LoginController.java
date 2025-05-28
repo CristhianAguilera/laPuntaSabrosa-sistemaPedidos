@@ -25,7 +25,7 @@ public class LoginController {
 
         if (usuarioService.obtenerPorCorreoYContrasena(correoelectronico, contrasena)
                 .isEmpty()) {
-            return "redirect:/?error=Usuario+no+encontrada";
+            return "redirect:/?error=Usuario+no+encontrado";
         } else if (usuarioService.obtenerPorCorreo(correoelectronico).get(0).getContrasena().equals(contrasena)) {
             return "redirect:/Pedidos";
         } else {
