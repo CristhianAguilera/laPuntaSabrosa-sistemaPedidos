@@ -57,7 +57,7 @@ public class SecurityConfig {
                         .loginProcessingUrl("/login")
                         .usernameParameter("correoelectronico")
                         .passwordParameter("contrasena")
-                        
+                        .successHandler(new CustomAuthenticationSuccessHandler())
                         .permitAll())
                 .logout(logout -> logout
                         .logoutUrl("/logout")
@@ -69,5 +69,38 @@ public class SecurityConfig {
         return http.build();
     }
 
-   
+    @Component
+    public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+
+        @Override
+        public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+                Authentication authentication) throws IOException, ServletException {
+
+            // Obtener el correo del usuario autenticado
+            String correo = authentication.getName();
+
+            Usuario usuario = usuarioService.obtenerPorCorreo(correo);
+
+            if (usuario != null) {
+
+                HttpSession session = request.getSession();
+                session.setAttribute("usuario", usuario);
+            }
+
+            // Redirige según el rol
+            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+            for (GrantedAuthority authority : authorities) {
+                if (authority.getAuthority().equals("ROLE_ADMIN")) {
+                    response.sendRedirect("/admin/registrarMozo");
+                    return;
+                } else if (authority.getAuthority().equals("ROLE_MOZO")) {
+                    response.sendRedirect("/Mesas");
+                    return;
+                }
+            }
+
+            // Si no se encuentra el usuario o no tiene un rol válido
+            response.sendRedirect("/");
+        }
+    }
 }
