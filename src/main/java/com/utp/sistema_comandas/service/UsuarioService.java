@@ -1,9 +1,14 @@
+
 package com.utp.sistema_comandas.service;
 
-import java.util.ArrayList;
+
+import java.util.List;
 import java.util.Optional;
 import com.utp.sistema_comandas.model.Usuario;
 import com.utp.sistema_comandas.repository.UsuarioRepository;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,26 +17,28 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public ArrayList<Usuario> obtenerUsuarios() {
-        return (ArrayList<Usuario>) usuarioRepository.findAll();
+    public List<Usuario> obtenerLosUsuarios() {
+        return usuarioRepository.findAll();
     }
 
-    public ArrayList<Usuario> obtenerPorCorreo(String correo) {
+    public Usuario obtenerPorCorreo(String correo) {
         return usuarioRepository.findByCorreo(correo);
     }
 
-    public ArrayList<Usuario> obtenerPorCorreoYContrasena(String correo, String contrasena) {
+    public List<Usuario> obtenerPorCorreoYContrasena(String correo, String contrasena) {
         return usuarioRepository.findByCorreoAndContrasena(correo, contrasena);
     }
 
+    public Optional<Usuario> obtenerPorId(Long usuarioId) {
+        return usuarioRepository.findById(usuarioId);
+    }
+
+    @Transactional
     public Usuario guardUsuario(Usuario usuario) {
         return usuarioRepository.save(usuario);
     }
 
-    public Optional<Usuario> obtenerPorId(Long id) {
-        return usuarioRepository.findById(id);
-    }
-
+    @Transactional
     public boolean eliminarUsuario(Long id) {
         try {
             usuarioRepository.deleteById(id);

@@ -1,6 +1,9 @@
 package com.utp.sistema_comandas.repository;
 
-import java.util.ArrayList;
+
+import java.util.List;
+import java.util.Optional;
+
 import com.utp.sistema_comandas.model.Usuario;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -8,8 +11,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UsuarioRepository extends CrudRepository<Usuario, Long> {
     
-    public abstract ArrayList<Usuario> findByCorreo(String correo);
+    Usuario findByCorreo(String correo);
 
-    public abstract ArrayList<Usuario> findByCorreoAndContrasena(String correo, String contrasena);
+    List<Usuario> findByCorreoAndContrasena(String correo, String contrasena);
+
+    List<Usuario> findByRol(String rol);
+
+    @Override
+    List<Usuario> findAll();
+
+    Optional findById(Long usuarioid);
     
 }
