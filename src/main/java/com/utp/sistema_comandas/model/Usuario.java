@@ -1,5 +1,3 @@
-
-
 package com.utp.sistema_comandas.model;
 
 import jakarta.persistence.*;
@@ -15,9 +13,20 @@ public class Usuario {
 
     private String nombre;
 
+    private String apellido;
+
+    private String dni;
+
+    private String telefono;
+
+    @Column(unique = true)
     private String correo;
 
     private String contrasena;
+
+    private String rol;
+
+    private String estado;
 
     public Long getId() {
         return id;
@@ -35,6 +44,30 @@ public class Usuario {
         this.nombre = nombre;
     }
 
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public String getDni() {
+        return dni;
+    }
+
+    public void setDni(String dni) {
+        this.dni = dni;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
     public String getCorreo() {
         return correo;
     }
@@ -49,6 +82,22 @@ public class Usuario {
 
     public void setContrasena(String contrasena) {
         this.contrasena = contrasena;
+    }
+
+    public String getRol() {
+        return rol;
+    }
+    
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
+    
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 }
 
