@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>DOT-MOZOS</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!-- Estilos de PNotify -->
+    <link href="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/PNotify.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/BrightTheme.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/dotMozos.css">
+</head>
+
+<body>
+    <header>
+        <div th:replace="~{fragments/menuAdmin :: menuAdmin}"></div>
+    </header>
+
+
+    <main>
+        <div class="container mt-3">
+
+            <h2>Lista de Mozos</h2>
+
+            <div th:if="${param.success}" id="successMessage" data-message="¡Exito al editar!"></div>
+            <div th:if="${param.error1}" id="errorMessage" data-message="¡Verifique el telefono Ingresado!"></div>
+            <div th:if="${param.error}" id="error1Message" data-message="¡Ocurrió un error al editar!"></div>
+
+            <div th:if="${param.success1}" id="success1Message"
+                data-message="¡El trabajador se inhabilito correctamente!"></div>
+            <div th:if="${param.error2}" id="error2Message" data-message="¡Trabajador no encontrado!"></div>
+            <div th:if="${param.error3}" id="error3Message"
+                data-message="¡Ocurrió un error al inhabilitar el trabajador!"></div>
+            <div class="table-responsive">
+
+                <table class="table table-striped mt-2" id="TablaDatos">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nombres</th>
+                            <th scope="col">Apellidos</th>
+                            <th scope="col">Correo</th>
+                            <th scope="col">DNI</th>
+                            <th scope="col">Telefono</th>
+                            <th scope="col">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- iteraramos sobre los trabajadores para mostrarlas-->
+                        <tr th:each="usuario : ${usuarios}">
+                            <td th:text="${usuario.nombre}"></td>
+                            <td th:text="${usuario.apellido}"></td>
+                            <td th:text="${usuario.correo}"></td>
+                            <td th:text="${usuario.dni}"></td>
+                            <td th:text="${usuario.telefono}"></td>
+                            <td class="fila-b">
+                                <button class="btn btn-warning btn-consulta" data-bs-toggle="modal"
+                                    data-bs-target="#editarDatos" th:attr="data-usuario-id=${usuario.id}">
+                                    <ion-icon name="create-outline"></ion-icon>
+                                </button>
+
+                                <button type="button" class="btn btn-danger btn-marcar-inactivo"
+                                    th:attr="data-usuario-id=${usuario.id}"
+                                    th:disabled="${usuario.estado == 'Inactivo'}">
+                                    <ion-icon name="pause-circle-outline"></ion-icon>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <div class="modal fade" id="editarDatos" tabindex="-1" aria-labelledby="editarDatosLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editarDatosLabel">Editar Mozo</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" id="editar-mozo">
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="nombres" class="form-label">Nombres (*)</label>
+                                    <input type="text" class="form-control" id="nombre" name="nombre"
+                                        placeholder="Nombres">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="apellidos" class="form-label">Apellidos (*)</label>
+                                    <input type="text" class="form-control" id="apellido" name="apellido"
+                                        placeholder="Apellidos">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="correoElectronico" class="form-label">Correo electrónico (*)</label>
+                                    <input type="email" class="form-control" id="correoElectronico"
+                                        name="correoElectronico" placeholder="example@mail.com" readonly>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="ndocumento" class="form-label">DNI (*)</label>
+                                    <input type="tel" class="form-control" id="Dni" name="Dni" maxlength="15" readonly>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="telefono" class="form-label">Teléfono (*)</label>
+                                    <input type="tel" class="form-control" id="telefono" name="telefono"
+                                        placeholder="Teléfono" maxlength="9">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4 estado-container">
+                                    <label for="rol" class="form-label">Estado (*)</label>
+                                    <select class="form-select" id="estado" name="estado">
+                                        <option selected disabled>Seleccionar</option>
+                                        <option value="Activo">Activo</option>
+                                    </select>
+                                </div>
+                                <input type="hidden" id="estadoHidden" name="estado" value="Activo">
+                            </div>
+
+                            <input type="hidden" name="id" id="usuarioId" value="">
+
+                            <div class="mt-2 modal-footer d-flex justify-content-center">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                <button type="submit" class="btn btn-dark">Guardar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+
+   <!--permite cargar los datos del trabajador al modal de edicion-->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const modal = new bootstrap.Modal(document.getElementById('editarDatos'));
+            //selecciona al elemento con la clase btn-consulta
+            document.querySelectorAll('.btn-consulta').forEach(button => {
+                button.addEventListener('click', function () {
+
+                    //obtiene el id del trabajdor
+                    const usuarioId = button.getAttribute('data-usuario-id');
+                    // Si tiene solicitud, realiza la petición
+                    fetch(`/editarusuarioModal/${usuarioId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            document.getElementById("usuarioId").value = data.id;
+                            document.getElementById('nombre').value = data.nombre;
+                            document.getElementById('apellido').value = data.apellido;
+                            document.getElementById('correoElectronico').value = data.correo;
+                            document.getElementById('telefono').value = data.telefono;
+                            document.getElementById('Dni').value = data.dni;
+
+                            const estadoSelectContainer = document.querySelector('.estado-container');
+                            if (data.estado === "Activo") {
+                                estadoSelectContainer.style.display = "none"; // Oculta el select
+                                document.getElementById('estadoHidden').value = "Activo"; // Valor predeterminado
+                                document.getElementById('estadoHidden').disabled = false; // Asegúrate de habilitar el input oculto
+                                document.getElementById('estado').disabled = true; // Deshabilita el select
+                            } else {
+                                estadoSelectContainer.style.display = "block"; // Muestra el select
+                                document.getElementById('estadoHidden').value = ""; // Limpia el valor oculto
+                                document.getElementById('estadoHidden').disabled = true; // Deshabilita el input oculto
+                                document.getElementById('estado').disabled = false; // Habilita el select
+                            }
+
+                            modal.show();
+                        })
+                        .catch(error => console.error('Error al cargar los datos:', error));
+                });
+            });
+
+        });
+
+
+    </script>
+
+    <script>
+        document.getElementById("editar-mozo").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const form = this;
+            const formData = new FormData(form);
+
+            fetch("/EditarMozo", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        PNotify.success({
+                            text: "¡Mozo editado exitosamente!",
+                            delay: 1000
+                        });
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
+                    } else if (data.error) {
+                        PNotify.error({
+                            text: data.error,
+                            delay: 3000
+                        });
+                    }
+                })
+                .catch(error => {
+                    PNotify.error({
+                        text: "Error de red: " + error.message,
+                        delay: 3000
+                    });
+                });
+        });
+    </script>
+<script>
+        document.querySelectorAll('.btn-marcar-inactivo').forEach(button => {
+            button.addEventListener('click', function () {
+                const usuarioId = this.getAttribute('data-usuario-id');
+                Swal.fire({
+                    title: '¿Desea marcar a este mozo como inactivo?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, marcar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        const formData = new FormData();
+                        formData.append("id", usuarioId);  // Aquí "id" debe coincidir con el nombre del atributo en Usuario
+
+                        fetch("/ActualizarEstadoMozo", {
+                            method: "POST",
+                            body: formData
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    PNotify.success({
+                                        text: "¡Mozo marcado como inactivo exitosamente!",
+                                        delay: 1000
+                                    });
+                                    setTimeout(() => {
+                                        location.reload();
+                                    }, 1000);
+                                } else if (data.error) {
+                                    PNotify.error({
+                                        text: data.error,
+                                        delay: 3000
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                PNotify.error({
+                                    text: "Error de red: " + error.message,
+                                    delay: 3000
+                                });
+                            });
+                    }
+                });
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+        crossorigin="anonymous"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+    <!-- Scripts de PNotify -->
+    <script src="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/PNotify.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/PNotifyButtons.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/PNotifyButtons.css" rel="stylesheet">
+
+</body>
+
+</html>
