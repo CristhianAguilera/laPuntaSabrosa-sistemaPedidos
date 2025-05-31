@@ -143,7 +143,88 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
 
 
-   
+   <!--permite cargar los datos del trabajador al modal de edicion-->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const modal = new bootstrap.Modal(document.getElementById('editarDatos'));
+            //selecciona al elemento con la clase btn-consulta
+            document.querySelectorAll('.btn-consulta').forEach(button => {
+                button.addEventListener('click', function () {
+
+                    //obtiene el id del trabajdor
+                    const usuarioId = button.getAttribute('data-usuario-id');
+                    // Si tiene solicitud, realiza la petición
+                    fetch(`/editarusuarioModal/${usuarioId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            document.getElementById("usuarioId").value = data.id;
+                            document.getElementById('nombre').value = data.nombre;
+                            document.getElementById('apellido').value = data.apellido;
+                            document.getElementById('correoElectronico').value = data.correo;
+                            document.getElementById('telefono').value = data.telefono;
+                            document.getElementById('Dni').value = data.dni;
+
+                            const estadoSelectContainer = document.querySelector('.estado-container');
+                            if (data.estado === "Activo") {
+                                estadoSelectContainer.style.display = "none"; // Oculta el select
+                                document.getElementById('estadoHidden').value = "Activo"; // Valor predeterminado
+                                document.getElementById('estadoHidden').disabled = false; // Asegúrate de habilitar el input oculto
+                                document.getElementById('estado').disabled = true; // Deshabilita el select
+                            } else {
+                                estadoSelectContainer.style.display = "block"; // Muestra el select
+                                document.getElementById('estadoHidden').value = ""; // Limpia el valor oculto
+                                document.getElementById('estadoHidden').disabled = true; // Deshabilita el input oculto
+                                document.getElementById('estado').disabled = false; // Habilita el select
+                            }
+
+                            modal.show();
+                        })
+                        .catch(error => console.error('Error al cargar los datos:', error));
+                });
+            });
+
+        });
+
+
+    </script>
+
+    <script>
+        document.getElementById("editar-mozo").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const form = this;
+            const formData = new FormData(form);
+
+            fetch("/EditarMozo", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        PNotify.success({
+                            text: "¡Mozo editado exitosamente!",
+                            delay: 1000
+                        });
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
+                    } else if (data.error) {
+                        PNotify.error({
+                            text: data.error,
+                            delay: 3000
+                        });
+                    }
+                })
+                .catch(error => {
+                    PNotify.error({
+                        text: "Error de red: " + error.message,
+                        delay: 3000
+                    });
+                });
+        });
+    </script>
+
 
     
 
