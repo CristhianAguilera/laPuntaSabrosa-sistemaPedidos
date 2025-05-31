@@ -117,5 +117,24 @@ public class MozosController {
             return ResponseEntity.badRequest().body(Map.of("error", "Error al editar el mozo"));
         }
     }
-    
+     @PostMapping("/ActualizarEstadoMozo")
+    @ResponseBody
+    public ResponseEntity<?> ActualizarEstadoMozo(@RequestParam("id") Long id) {
+
+        try {
+            Optional<Usuario> usuarioOpt = usuarioService.obtenerPorId(id);
+            if (usuarioOpt.isPresent()) {
+                Usuario usuarioAct = usuarioOpt.get();
+
+                usuarioAct.setEstado("Inactivo");
+
+                usuarioService.guardUsuario(usuarioAct);
+                return ResponseEntity.ok().body(Map.of("success", true));
+            } else {
+                return ResponseEntity.badRequest().body(Map.of("error", "Usuario no encontrado"));
+            }
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Error al Modificar el estado del mozo"));
+        }
+    }
 }
