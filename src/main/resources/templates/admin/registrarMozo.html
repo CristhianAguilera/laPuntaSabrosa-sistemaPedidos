@@ -83,6 +83,41 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         </div>
     </main>
 
+    <script>
+        document.getElementById("Register-form").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const form = this;
+            const formData = new FormData(form);
+
+            fetch("/registroMozos", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        PNotify.success({
+                            text: "¡Mozo registrado exitosamente!",
+                            delay: 3000
+                        });
+                        form.reset(); // limpia el formulario
+                    } else if (data.error) {
+                        PNotify.error({
+                            text: data.error,
+                            delay: 3000
+                        });
+                    }
+                })
+                .catch(error => {
+                    PNotify.error({
+                        text: "Error de red: " + error.message,
+                        delay: 3000
+                    });
+                });
+        });
+    </script>
+
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
         integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
