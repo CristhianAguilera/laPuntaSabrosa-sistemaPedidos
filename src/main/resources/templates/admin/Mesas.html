@@ -37,12 +37,28 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             <h3>Mesas</h3>
 
             <div class="Acciones">
-               
+                <button id="btnAgregarMesa" type="button" class="btn btn-primary">
+                    <ion-icon name="add-outline"></ion-icon> Añadir Mesa
+                </button>
             </div>
 
             <div id="contenedorMesas" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
 
-               
+               <div th:each="mesa : ${mesas}" class="col">
+                    <div class="bg-white p-2 rounded shadow-sm text-center">
+                        <div class="tituloMesa">
+                            <ion-icon name="albums-outline"></ion-icon>
+                            <strong>Mesa <span th:text="${mesa.numero}"></span></strong><br>
+                        </div>
+                        <div class="datosMesa">
+                            <ion-icon name="people-outline"></ion-icon> <span th:text="${mesa.cantidadPersonas}"></span>
+                            <ion-icon name="cash-outline"></ion-icon> S/. <span th:text="${mesa.montoTotal}"></span>
+                            <ion-icon name="person-outline"></ion-icon> <span th:text="${mesa.nombreCliente}"></span>
+                            <ion-icon name="person-circle-outline"></ion-icon> <span
+                                th:text="${mesa.nombreMozo}"></span>
+                        </div>
+                    </div>
+                </div>
 
             </div>
         </main>
