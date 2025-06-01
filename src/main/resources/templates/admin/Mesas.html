@@ -64,7 +64,66 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         </main>
     </div>
 
+    <script>
+        document.getElementById('btnAgregarMesa').addEventListener('click', function () {
+            Swal.fire({
+                title: '¿Deseas añadir una nueva mesa?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, añadir',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('/agregarMesa', {
+                        method: 'POST'
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data && data.numero) {
+                                agregarMesaAlDOM(data);
+                                PNotify.success({
+                                    text: '¡Mesa añadida exitosamente!',
+                                    delay: 3000
+                                });
+                            } else if (data.error) {
+                                PNotify.error({
+                                    text: data.error,
+                                    delay: 3000
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            PNotify.error({
+                                text: 'Error de red: ' + error.message,
+                                delay: 3000
+                            });
+                        });
+                }
+            });
+        });
 
+        function agregarMesaAlDOM(mesa) {
+            const contenedor = document.getElementById('contenedorMesas');
+
+            const nuevaMesaHTML = `
+        <div class="col">
+            <div class="bg-white p-2 rounded shadow-sm text-center">
+                <div class="tituloMesa">
+                    <ion-icon name="albums-outline"></ion-icon>
+                    <strong>Mesa ${mesa.numero}</strong><br>
+                </div>
+                <div class="datosMesa">
+                    <ion-icon name="people-outline"></ion-icon> ${mesa.cantidadPersonas || 0}
+                    <ion-icon name="cash-outline"></ion-icon> S/. ${(mesa.montoTotal || 0).toFixed(2)}
+                    <ion-icon name="person-outline"></ion-icon> ${mesa.nombreCliente || ''}
+                    <ion-icon name="person-circle-outline"></ion-icon> ${mesa.nombreMozo || ''}
+                </div>
+            </div>
+        </div>
+        `;
+            contenedor.insertAdjacentHTML('beforeend', nuevaMesaHTML);
+        }
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
