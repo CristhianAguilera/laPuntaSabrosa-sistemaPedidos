@@ -45,5 +45,12 @@ public class MesasController {
             return ResponseEntity.badRequest().body(Map.of("error", "Error al Agregar mesa"));
         }
     }
+
+    @GetMapping("/mozo/mesasMozo")
+    public String mesasMozo(Model model) {
+        List<Mesa> listaMesas = mesaService.listarTodas();
+        model.addAttribute("mesasM", listaMesas);
+        return "/mozo/mesasMozo"; 
+    }
     
 }
