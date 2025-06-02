@@ -1,0 +1,83 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : 24 oct 2024, 23:32:41
+    Author     : ADVANCE
+*/
+
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+    font-family: "Noto Serif", serif;
+}
+
+body {
+    background-color: #f7f3ef;
+    color: #4b2e2e;
+}
+
+
+main {
+    padding: 20px;
+
+
+}
+
+.navbar{
+    border-end-end-radius:20px;
+    background-color: #935e29;
+}
+.nav-link{
+    color: white;
+    font-size: 18px;
+    text-decoration: none;
+}
+
+.nav-link:hover{
+    color: #d18335;
+    text-decoration: underline;
+}
+
+.Acciones button{
+    display: flex;
+}
+
+.Acciones {
+    margin-bottom: 20px;
+}
+
+.tituloMesa {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.tituloMesa Strong{
+    margin-left: 5px;
+}
+
+.datosMesa {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: left;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+
+ion-icon {
+    font-size: 23px;
+    color: #333;
+}
+
+/* Main Empleados */
+h2 {
+    text-align: center;
+}
