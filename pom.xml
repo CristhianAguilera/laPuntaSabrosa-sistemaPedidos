@@ -111,17 +111,17 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-<plugin>
-           <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <!-- 1.10, 11, 12, 13-->
-                    <release>20</release>                   
-                    <source>20</source>
-                    <target>20</target>
-                </configuration>
-        </plugin>
+                        <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-compiler-plugin</artifactId>
+                                <version>3.8.1</version>
+                                <configuration>
+                                   <!-- 1.10, 11, 12, 13-->
+                                   <release>20</release>                   
+                                   <source>20</source>
+                                   <target>20</target>
+                                </configuration>
+                        </plugin>
 		</plugins>
 	</build>
 
