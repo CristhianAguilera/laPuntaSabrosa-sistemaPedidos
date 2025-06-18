@@ -2,13 +2,16 @@ package com.utp.sistema_comandas.Controllers;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.utp.sistema_comandas.model.Mesa;
@@ -51,6 +54,26 @@ public class MesasController {
         List<Mesa> listaMesas = mesaService.listarTodas();
         model.addAttribute("mesasM", listaMesas);
         return "/mozo/mesasMozo"; 
+    }
+    @PostMapping("/eliminarMesa")
+    @ResponseBody
+    public ResponseEntity<?> eliminarMesa(@RequestParam("numeroMesa") int numeroMesa) {
+        try {
+            Optional<Mesa> mesa = mesaService.buscarPorNumero(numeroMesa);
+
+            if (mesa.isPresent()) {
+                mesaService.eliminar(mesa.get().getId());
+                return ResponseEntity.ok().body(Map.of("success", true));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("error", "Mesa no encontrada"));
+            }
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Error al eliminar la Mesa"));
+        }
+
     }
     
 }
