@@ -140,7 +140,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 const numeroMesa = btn.getAttribute('data-numero-mesa');
 
                 Swal.fire({
-                    title: ¿Eliminar esta Mesa?,
+                    title: '¿Eliminar esta Mesa?',
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Sí, eliminar',
@@ -151,7 +151,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                         const formData = new FormData();
                         formData.append("numeroMesa", numeroMesa);
 
-                        fetch(/eliminarMesa, {
+                        fetch('/eliminarMesa', {
                             method: "POST",
                             body: formData
                         })
@@ -197,8 +197,3 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 </body>
 
 </html>
-
-
-
-
-
