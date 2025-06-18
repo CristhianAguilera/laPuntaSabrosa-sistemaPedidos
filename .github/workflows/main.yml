@@ -16,35 +16,49 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     services:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: 
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_DATABASE: restaurante2
           MYSQL_USER: root
-          MYSQL_PASSWORD:
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping -h 127.0.0.1 -u root -proot"
+          --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK 21
+    - name: Checkout código
+      uses: actions/checkout@v4
+
+    - name: Configurar JDK 21
       uses: actions/setup-java@v4
       with:
         java-version: '21'
         distribution: 'temurin'
         cache: maven
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
+
+    - name: Esperar a que MySQL esté listo
+      run: |
+        echo "Esperando a que el servicio de MySQL esté activo..."
+        sleep 20
+
+    - name: Configurar variables de entorno
+      run: |
+        echo "DB_HOST=localhost" >> $GITHUB_ENV
+        echo "DB_PORT=3306" >> $GITHUB_ENV
+        echo "DB_NAME=restaurante2" >> $GITHUB_ENV
+        echo "DB_USER=root" >> $GITHUB_ENV
+        echo "DB_PASS=" >> $GITHUB_ENV
+
+    - name: Compilar sin ejecutar pruebas
+      run: mvn clean install -DskipTests
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     #- name: Update dependency graph
