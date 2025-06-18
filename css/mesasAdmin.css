@@ -77,6 +77,32 @@ ion-icon {
     color: #333;
 }
 
+/* Botón Eliminar Mesa */
+.btnEliminarMesa {
+    background-color: #c9302c !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-size: 15px !important;
+    padding: 8px 16px !important;
+    transition: background-color 0.3s ease;
+}
+
+.btnEliminarMesa:hover {
+    background-color: #a72823 !important;
+}
+
+
+#btnAgregarMesa{
+    background-color: #935e29 !important; /* mismo color que tu navbar */
+    border-color: #935e29 !important;
+    color: rgb(241, 239, 235) !important;
+}
+
+#btnAgregarMesa:hover {
+    background-color: #c5a990 !important; /* tono más oscuro para el hover */
+    border-color: #7a4b1e !important;
+}
+
 /* Main Empleados */
 h2 {
     text-align: center;
