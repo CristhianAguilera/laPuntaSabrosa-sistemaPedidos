@@ -76,7 +76,7 @@ jobs:
       uses: docker/build-push-action@v6
       with:
           push: true
-          tags: CristhianAguilera/laPuntaSabrosa-sistemaPedidos:latest
+          tags: cristhian2/sistema-comandas:latest
       
 
     - name: Compilar sin ejecutar pruebas
