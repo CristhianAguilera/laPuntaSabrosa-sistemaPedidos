@@ -61,7 +61,10 @@
                             <td th:text="${categoria.id}"></td>
                             <td th:text="${categoria.nombre}"></td>
                             <td class="fila-b">
-                                
+                                <button class="btn btn-warning btn-consulta" data-bs-toggle="modal"
+                                    data-bs-target="#editarDatos"
+                                    th:attr="data-categoria-id=${categoria.id}">✏️Editar</button>
+
                             </td>
                         </tr>
                     </tbody>
@@ -69,11 +72,142 @@
             </div>
         </div>
 
-      
+        <div class="modal fade" id="editarDatos" tabindex="-1" aria-labelledby="editarDatosLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editarDatosLabel">Editar Categoria</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" id="editar-categoria">
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="nombre" class="form-label">Nombre (*)</label>
+                                    <input type="text" class="form-control" id="nombrecat" name="nombre"
+                                        placeholder="Nombre">
+                                </div>
+
+                            </div>
+
+                            <input type="hidden" name="id" id="categoriaId" value="">
+
+                            <div class="mt-2 modal-footer d-flex justify-content-center">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                <button type="submit" class="btn btn-dark">Guardar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
 
     </main>
 
-   
+    <script>
+        document.getElementById("registCategoria").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const form = this;
+            const formData = new FormData(form);
+
+            fetch("/registroCategoria", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        PNotify.success({
+                            text: "¡Categoria registrada exitosamente!",
+                            delay: 1000
+                        });
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
+                    } else if (data.error) {
+                        PNotify.error({
+                            text: data.error,
+                            delay: 3000
+                        });
+                    }
+                })
+                .catch(error => {
+                    PNotify.error({
+                        text: "Error de red: " + error.message,
+                        delay: 3000
+                    });
+                });
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const modal = new bootstrap.Modal(document.getElementById('editarDatos'));
+            //selecciona al elemento con la clase btn-consulta
+            document.querySelectorAll('.btn-consulta').forEach(button => {
+                button.addEventListener('click', function () {
+
+                    const categoriaId = button.getAttribute('data-categoria-id');
+                    // Si tiene solicitud, realiza la petición
+
+                    fetch(`/editarcategoriaModal/${categoriaId}`)
+                        .then(response => response.json())
+                        .then(data => {
+
+                            document.getElementById('nombrecat').value = data.nombre;
+
+                            document.getElementById('categoriaId').value = data.categoriaId;
+
+                            modal.show();
+                        })
+                        .catch(error => console.error('Error al cargar los datos:', error));
+                });
+            });
+
+        });
+    </script>
+
+    <script>
+        document.getElementById("editar-categoria").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const form = this;
+            const formData = new FormData(form);
+
+            fetch("/editarCategoria", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        PNotify.success({
+                            text: "¡Categoria editada exitosamente!",
+                            delay: 1000
+                        });
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
+                    } else if (data.error) {
+                        PNotify.error({
+                            text: data.error,
+                            delay: 3000
+                        });
+                    }
+                })
+                .catch(error => {
+                    PNotify.error({
+                        text: "Error de red: " + error.message,
+                        delay: 3000
+                    });
+                });
+        });
+    </script>
+
+
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
