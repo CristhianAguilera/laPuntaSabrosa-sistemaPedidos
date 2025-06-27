@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.utp.sistema_comandas.model.Categoria;
@@ -89,6 +90,18 @@ public class CategoriasController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", "Error al editar Categoria"));
         }
+    }
+
+    @PostMapping("/eliminarCategoria")
+    @ResponseBody
+    public ResponseEntity<?> eliminarCategoria(@RequestParam("id") Long id) {
+        try {           
+            categoriaService.eliminarCategoria(id);
+            return ResponseEntity.ok().body(Map.of("success", true));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Error al registrar Categoria"));
+        }
+
     }
 
     

@@ -65,6 +65,9 @@
                                     data-bs-target="#editarDatos"
                                     th:attr="data-categoria-id=${categoria.id}">✏️Editar</button>
 
+                                <button type="button" class="btn btn-danger btn-eliminar"
+                                    th:attr="data-categoria-id=${categoria.id}">🗑️Eliminar</button>
+
                             </td>
                         </tr>
                     </tbody>
@@ -207,7 +210,54 @@
         });
     </script>
 
+    <script>
+        document.querySelectorAll('.btn-eliminar').forEach(button => {
+            button.addEventListener('click', function () {
+                const categoriaId = this.getAttribute('data-categoria-id');
+                Swal.fire({
+                    title: '¿Desea meliminar esta categoria?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
 
+                        const formData = new FormData();
+                        formData.append("id", categoriaId);  // Aquí "id" debe coincidir con el nombre del atributo en Usuario
+
+                        fetch("/eliminarCategoria", {
+                            method: "POST",
+                            body: formData
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    PNotify.success({
+                                        text: "¡Categoria eliminada exitosamente!",
+                                        delay: 1000
+                                    });
+                                    setTimeout(() => {
+                                        location.reload();
+                                    }, 1000);
+                                } else if (data.error) {
+                                    PNotify.error({
+                                        text: data.error,
+                                        delay: 3000
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                PNotify.error({
+                                    text: "Error de red: " + error.message,
+                                    delay: 3000
+                                });
+                            });
+                    }
+                });
+            });
+        });
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
