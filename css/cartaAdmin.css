@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+    font-family: "Noto Serif", serif;
+}
+
+body {
+    background-color: #f7f3ef;
+    color: #4b2e2e;
+}
+
+main {
+    padding: 20px;
+}
+
+.navbar{
+    border-end-end-radius:20px;
+    background-color: #935e29;
+}
+.nav-link{
+    color: white;
+    font-size: 18px;
+    text-decoration: none;
+}
+
+.nav-link:hover{
+    color: #d18335;
+    text-decoration: underline;
+}
+
+
+.input-group {
+    display: flex;
+    align-items: center;
+    width: 300px;
+    z-index: 1;
+}
+
+.input-group-text {
+    background-color: #f4f4f4;
+    border: 1px solid #ccc;
+    border-right: none;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+}
+
+.input-group ion-icon {
+    font-size: 24px;
+    color: #333;
+}
+
+/* Main Empleados */
+h2 {
+    text-align: center;
+}
+
+.fila-b .btn-danger {
+    margin-left: 5px;
+}
+
+.table th,
+.table td {
+    padding: 12px 15px;
+    /* Aumenta el padding de las celdas */
+    vertical-align: middle;
+    /* Alinea verticalmente el contenido */
+}
+
+.table td {
+    white-space: nowrap;
+    /* Evita que el contenido se divida en varias líneas */
+}
+
+.fila-b {
+    display: flex;
+    justify-content: space-around;
+    /* Espacia los botones de acción */
+}
+
+/* Estilos responsivos */
+@media (max-width: 1110px) {
+    .fila-b .btn {
+        margin-left: 0px;
+    }
+
+    .fila-b .btn-danger {
+        margin-left: 7;
+    }
+
+}
+
+@media (max-width: 1020px) {
+    .fila-b .btn-danger {
+        margin-left: 0;
+    }
+
+    .fila-b .btn {
+        margin-left: 12px;
+    }
+
+    .input-group {
+        width: 100%;
+    }
+}
