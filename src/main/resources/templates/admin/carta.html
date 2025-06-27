@@ -74,7 +74,7 @@
                             <td>S/. <span th:text="${producto.precio}"></span></td>
                             <td th:text="${producto.categoria.nombre}"></td>
                             <td class="fila-b">
-                                
+
                             </td>
                             
                         </tr>
@@ -83,6 +83,43 @@
             </div>
         </div>
     </main>
+
+    <script>
+        document.getElementById("registar-plato-carta").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const form = this;
+            const formData = new FormData(form);
+
+            fetch("/registro-plato-carta", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        PNotify.success({
+                            text: "¡Plato registrado exitosamente!",
+                            delay: 1000
+                        });
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
+                    } else if (data.error) {
+                        PNotify.error({
+                            text: data.error,
+                            delay: 3000
+                        });
+                    }
+                })
+                .catch(error => {
+                    PNotify.error({
+                        text: "Error de red: " + error.message,
+                        delay: 3000
+                    });
+                });
+        });
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

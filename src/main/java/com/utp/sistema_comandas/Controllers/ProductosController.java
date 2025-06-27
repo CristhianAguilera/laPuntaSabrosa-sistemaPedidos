@@ -44,6 +44,20 @@ public class ProductosController {
         return "admin/carta";
     }
 
+    @PostMapping("/registro-plato-carta")
+    @ResponseBody
+    public ResponseEntity<?> registroplatocarta(@ModelAttribute Producto producto) {
+        try {
+            producto.setTipo("Carta");
+
+            productoService.guardarProducto(producto);
+            return ResponseEntity.ok().body(Map.of("success", true));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Error al registrar Plato en Carta"));
+        }
+
+    }
+
 //--------------------------------------------------Menu Diario-------------------------------------------------
 
     @GetMapping("/admin/menuDiario")
@@ -56,6 +70,21 @@ public class ProductosController {
 
         return "admin/menuDiario";
     }
+
+    @PostMapping("/registro-plato-menu")
+    @ResponseBody
+    public ResponseEntity<?> registroplatomenu(@ModelAttribute Producto producto) {
+        try {
+            producto.setTipo("Menu");
+
+            productoService.guardarProducto(producto);
+            return ResponseEntity.ok().body(Map.of("success", true));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Error al registrar Plato en el menú"));
+        }
+
+    }
+
 
 
     
