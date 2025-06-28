@@ -74,7 +74,9 @@
                             <td>S/. <span th:text="${producto.precio}"></span></td>
                             <td th:text="${producto.categoria.nombre}"></td>
                             <td class="fila-b">
-                           
+                           <button class="btn btn-warning btn-consulta" data-bs-toggle="modal"
+                                    data-bs-target="#editarDatos"
+                                    th:attr="data-producto-id=${producto.id}">✏️Editar</button>
                                 
                             </td>
                             
@@ -82,8 +84,50 @@
                     </tbody>
                 </table>
             </div>
-        </div>
 
+        </div>
+ <div class="modal fade" id="editarDatos" tabindex="-1" aria-labelledby="editarDatosLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editarDatosLabel">Editar Plato</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" id="editar-plato-Menu" enctype="multipart/form-data">
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="nombre" class="form-label">Nombre (*)</label>
+                                    <input type="text" class="form-control" id="nombre" name="nombre"
+                                        placeholder="Nombre">
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="precio" class="form-label">Precio (*)</label>
+                                    <input type="number" step="0.01" class="form-control" id="precio" name="precio"
+                                        placeholder="Precio">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="categoria" class="form-label">Categoría (*)</label>
+                                    <select name="categoria.id" id="categoria" class="form-select">
+                                        <option value="">Categoría</option>
+                                        <option th:each="cat : ${categorias}" th:value="${cat.id}"
+                                            th:text="${cat.nombre}"></option>
+                                    </select>
+                                </div>
+
+                                <input type="hidden" name="id" id="productoId" value="">
+
+                                <div class="mt-2 modal-footer d-flex justify-content-center">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Cerrar</button>
+                                    <button type="submit" class="btn btn-dark">Guardar</button>
+                                </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
     <script>
         document.getElementById("registar-plato-menu").addEventListener("submit", function (event) {
             event.preventDefault();
@@ -120,7 +164,71 @@
                 });
         });
     </script>
-    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const modal = new bootstrap.Modal(document.getElementById('editarDatos'));
+            //selecciona al elemento con la clase btn-consulta
+            document.querySelectorAll('.btn-consulta').forEach(button => {
+                button.addEventListener('click', function () {
+
+                    const productoId = button.getAttribute('data-producto-id');
+                    // Si tiene solicitud, realiza la petición
+
+                    fetch(`/editarMenuModal/${productoId}`)
+                        .then(response => response.json())
+                        .then(data => {
+
+                            document.getElementById('nombre').value = data.nombre;
+                            document.getElementById('precio').value = data.precio;
+                            document.getElementById('productoId').value = data.id;
+                            document.getElementById('categoria').value = data.categoria;
+
+                            modal.show();
+                        })
+                        .catch(error => console.error('Error al cargar los datos:', error));
+                });
+            });
+
+        });
+    </script>
+
+    <script>
+        document.getElementById("editar-plato-Menu").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const form = this;
+            const formData = new FormData(form);
+
+            fetch("/editar-plato-Menu", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        PNotify.success({
+                            text: "Menú editado exitosamente!",
+                            delay: 1000
+                        });
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
+                    } else if (data.error) {
+                        PNotify.error({
+                            text: data.error,
+                            delay: 3000
+                        });
+                    }
+                })
+                .catch(error => {
+                    PNotify.error({
+                        text: "Error de red: " + error.message,
+                        delay: 3000
+                    });
+                });
+        });
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!--Iconos-->
