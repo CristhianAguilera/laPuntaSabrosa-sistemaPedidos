@@ -9,49 +9,57 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 <body>
     <nav class="navbar navbar-expand-lg" th:fragment="menuAdmin">
         <div class="container-fluid">
-            <img src="/image/logoLPS.png" class="navbar-brand" alt="" width="120" height="100">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
+            <div class="navbar-brand-container">
+                <img src="/image/logoLPS.png" class="logo-img" alt="La Punta Sabrosa Logo" width="100" height="80">
+                <h3 class="brand-text">La Punta Sabrosa</h3>
+            </div>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            Mozos
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-users nav-icon"></i>Mozos
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/admin/registrarMozo">Registrar</a></li>
-                            <li><a class="dropdown-item" href="/admin/dotMozos">Lista</a></li>
+                            <li><a class="dropdown-item" href="/admin/registrarMozo">
+                                <i class="fas fa-user-plus nav-icon"></i>Registrar
+                            </a></li>
+                            <li><a class="dropdown-item" href="/admin/dotMozos">
+                                <i class="fas fa-list nav-icon"></i>Lista
+                            </a></li>
                         </ul>
                     </li>
-
                     <li class="nav-item">
-                        <a class="nav-link" href="/admin/Mesas">Mesas</a>
+                        <a class="nav-link" href="/admin/Mesas">
+                            <i class="fas fa-table nav-icon"></i>Mesas
+                        </a>
                     </li>
-
                     <li class="nav-item">
-                        <a class="nav-link" href="/admin/categorias">Categorias</a>
+                        <a class="nav-link" href="/admin/categorias">
+                            <i class="fas fa-tags nav-icon"></i>Categorías
+                        </a>
                     </li>
-
                     <li class="nav-item">
-                        <a class="nav-link" href="/admin/carta">Carta</a>
+                        <a class="nav-link" href="/admin/carta">
+                            <i class="fas fa-book-open nav-icon"></i>Carta
+                        </a>
                     </li>
-                    
                     <li class="nav-item">
-                        <a class="nav-link" href="/admin/menuDiario">Menú Diario</a>
+                        <a class="nav-link" href="/admin/menuDiario">
+                            <i class="fas fa-calendar-day nav-icon"></i>Menú Diario
+                        </a>
                     </li>
-
-                    <li>
-                        <form th:action="@{/logout}" method="post">
-                            <button type="submit" class="dropdown-item">Cerrar sesión</button>
-                        </form>
-                    </li>
-
                 </ul>
+                
+                <form th:action="@{/logout}" method="post" class="d-flex">
+                    <button type="submit" class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i>Cerrar Sesión
+                    </button>
+                </form>
             </div>
         </div>
     </nav>

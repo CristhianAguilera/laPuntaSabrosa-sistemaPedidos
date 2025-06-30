@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('nav.css');
 
 * {
     font-family: "Noto Serif", serif;
@@ -12,22 +13,6 @@ body {
 main {
     padding: 20px;
 }
-
-.navbar{
-    border-end-end-radius:20px;
-    background-color: #935e29;
-}
-.nav-link{
-    color: white;
-    font-size: 18px;
-    text-decoration: none;
-}
-
-.nav-link:hover{
-    color: #d18335;
-    text-decoration: underline;
-}
-
 
 .input-group {
     display: flex;
