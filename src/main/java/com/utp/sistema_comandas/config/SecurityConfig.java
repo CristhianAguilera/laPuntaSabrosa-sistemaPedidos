@@ -49,7 +49,8 @@ public class SecurityConfig {
                         "/admin/carta/**",
                         "/admin/menuDiario/**",
                         "/admin/categorias/**").hasRole("ADMIN")
-                        .requestMatchers("/mozo/**").hasRole("MOZO")
+                        .requestMatchers("/mozo/**",
+                        "/mozo/mesasMozo/**").hasRole("MOZO")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/")
@@ -94,7 +95,7 @@ public class SecurityConfig {
                     response.sendRedirect("/admin/registrarMozo");
                     return;
                 } else if (authority.getAuthority().equals("ROLE_MOZO")) {
-                    response.sendRedirect("/Mesas");
+                    response.sendRedirect("/mozo/mesasMozo");
                     return;
                 }
             }
