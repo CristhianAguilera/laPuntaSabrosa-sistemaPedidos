@@ -37,41 +37,50 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             <div class="form-container mt-4">
                 <form method="post" enctype="multipart/form-data" id="Register-form">
                     <div class="row">
+                        <!-- Nombres -->
                         <div class="col-md-4 mb-3">
-                            <label for="Nombres" class="form-label">Nombres</label>
+                            <label for="Nombre" class="form-label">Nombres</label>
                             <input type="text" class="form-control" id="Nombre" name="Nombre" required>
+                            <small id="Nombre-error" class="text-danger"></small>
                         </div>
 
+
+                        <!-- Apellidos -->
                         <div class="col-md-4 mb-3">
-                            <label for="Apellidos" class="form-label">Apellidos</label>
+                            <label for="Apellido" class="form-label">Apellidos</label>
                             <input type="text" class="form-control" id="Apellido" name="Apellido" required>
+                            <small id="Apellido-error" class="text-danger"></small>
                         </div>
 
+                        <!-- DNI -->
                         <div class="col-md-4 mb-3">
-                            <label for="NDocumento" class="form-label">Nº de DNI</label>
-                            <input type="text" class="form-control" id="Dni" name="Dni" required>
+                            <label for="Dni" class="form-label">Nº de DNI</label>
+                            <input type="text" class="form-control" id="Dni" name="Dni" maxlength="8" required>
+                            <small id="Dni-error" class="text-danger"></small>
                         </div>
 
+                        <!-- Teléfono -->
                         <div class="col-md-4 mb-3">
-                            <label for="Telefono" class="form-label">Telefono</label>
-                            <input maxlength="9" type="text" class="form-control" id="Telefono" name="Telefono"
+                            <label for="Telefono" class="form-label">Teléfono</label>
+                            <input type="text" class="form-control" id="Telefono" name="Telefono" maxlength="9"
                                 required>
-
+                            <small id="Telefono-error" class="text-danger"></small>
                         </div>
 
+                        <!-- Correo -->
                         <div class="col-md-4 mb-3">
-                            <label for="Correo" class="form-label">Correo Electronico</label>
-                            <input type="email" class="form-control" id="Correo" name="Correo"
-                                aria-describedby="emailHelp" required>
-
+                            <label for="Correo" class="form-label">Correo Electrónico</label>
+                            <input type="email" class="form-control" id="Correo" name="Correo" required>
+                            <small id="Correo-error" class="text-danger"></small>
                         </div>
-
                         <div class="col-md-4 mb-3">
                             <label for="contrasena" class="form-label">Contraseña</label>
                             <input type="password" class="form-control" id="contrasena" name="contrasena" required>
-
+                            <small id="contrasena-error" class="text-danger"></small>
                         </div>
 
+
+                        <!-- Botón -->
                         <center>
                             <div class="btn-enviar mb-3">
                                 <button type="submit" class="btn btn-success">Registrar</button>
@@ -79,9 +88,60 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                         </center>
                     </div>
                 </form>
+
             </div>
         </div>
     </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const campos = {
+                Nombre: {
+                    regex: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/,
+                    mensaje: 'Solo se permiten letras.',
+                },
+                Apellido: {
+                    regex: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/,
+                    mensaje: 'Solo se permiten letras.',
+                },
+                Dni: {
+                    regex: /^\d{8}$/,
+                    mensaje: 'Debe contener exactamente 8 números.',
+                },
+                Telefono: {
+                    regex: /^\d{9}$/,
+                    mensaje: 'Debe contener exactamente 9 números.',
+                },
+                Correo: {
+                    regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    mensaje: 'Formato de correo inválido.',
+                },
+                contrasena: {
+                    regex: /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/,
+                    mensaje: 'Mínimo 8 caracteres, una mayúscula, un número y un símbolo.',
+                }
+            };
+
+            Object.keys(campos).forEach(id => {
+                const input = document.getElementById(id);
+                const error = document.getElementById(id + '-error');
+
+                input.addEventListener('input', function () {
+                    if (campos[id].regex.test(input.value.trim())) {
+                        error.textContent = '';
+                        input.classList.remove('is-invalid');
+                        input.classList.add('is-valid');
+                    } else {
+                        error.textContent = campos[id].mensaje;
+                        input.classList.add('is-invalid');
+                        input.classList.remove('is-valid');
+                    }
+                });
+            });
+        });
+    </script>
+
+
 
     <script>
         document.getElementById("Register-form").addEventListener("submit", function (event) {
