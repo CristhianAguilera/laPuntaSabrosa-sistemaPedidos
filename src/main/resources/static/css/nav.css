@@ -15,6 +15,7 @@
     border-radius: 10px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
     transition: transform 0.3s ease;
+    margin-right: 5px;
 }
 
 .logo-img:hover {
@@ -82,18 +83,12 @@
     font-weight: 600;
     font-size: 1rem;
     transition: all 0.3s ease;
-    
-    margin-left: 280px;
 }
 
 .btn-logout:hover {
     background: linear-gradient(45deg, #c86523, #bd5021);
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(231, 108, 15, 0.853);
-}
-
-.btn-logout i {
-    margin-right: 8px;    
 }
 
 i {

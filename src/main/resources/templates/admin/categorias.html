@@ -37,9 +37,10 @@
                 <form id="registCategoria" method="post" class="row g-3 mb-4">
                     <input type="hidden">
                     <div class="col-md-6">
-                        <label for="nombre" class="form-label">Nombre de Categoria</label>
-                        <input type="text" class="form-control" name="nombre" id="nombre"
-                            placeholder="Nombre de categoría" required>
+                        <label for="Nombre" class="form-label">Nombre de Categoria</label>
+                        <input type="text" class="form-control" name="Nombre" id="Nombre"
+                            placeholder="Nombre de categoría" oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '')" required>
+                        <small id="Nombre-error" class="text-danger"></small>
                     </div>
 
                     <button class="btn btn-success" type="submit">Agregar</button>
@@ -86,9 +87,9 @@
                         <form method="post" id="editar-categoria">
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <label for="nombre" class="form-label">Nombre (*)</label>
-                                    <input type="text" class="form-control" id="nombrecat" name="nombre"
-                                        placeholder="Nombre">
+                                    <label for="Nombre" class="form-label">Nombre (*)</label>
+                                    <input type="text" class="form-control" id="nombrecat" name="Nombre"
+                                        placeholder="Nombre" oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '')" required>
                                 </div>
 
                             </div>
@@ -105,10 +106,37 @@
             </div>
         </div>
 
-
-
     </main>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const campos = {
+                Nombre: {
+                    regex: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/,
+                    mensaje: 'Solo se permiten letras.',
+                }
+            };
+
+            Object.keys(campos).forEach(id => {
+                const input = document.getElementById(id);
+                const error = document.getElementById(id + '-error');
+
+                input.addEventListener('input', function () {
+                    if (campos[id].regex.test(input.value.trim())) {
+                        error.textContent = '';
+                        input.classList.remove('is-invalid');
+                        input.classList.add('is-valid');
+                    } else {
+                        error.textContent = campos[id].mensaje;
+                        input.classList.add('is-invalid');
+                        input.classList.remove('is-valid');
+                    }
+                });
+            });
+        });
+    </script>
+
+    
     <script>
         document.getElementById("registCategoria").addEventListener("submit", function (event) {
             event.preventDefault();

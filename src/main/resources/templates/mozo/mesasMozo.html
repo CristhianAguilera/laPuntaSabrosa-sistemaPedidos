@@ -39,10 +39,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
             <div id="contenedorMesas" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
 
-                <div th:if="${#lists.isEmpty(mesasM)}" class="col-12">
-                    <p class="text-center text-muted">No hay mesas registradas.</p>
-                </div>
-
                 <div th:each="mesa : ${mesasM}" class="col">
                     <div class="bg-white p-2 rounded shadow-sm text-center">
                         <div class="tituloMesa">
