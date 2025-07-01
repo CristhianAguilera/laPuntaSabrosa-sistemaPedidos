@@ -20,17 +20,17 @@
     <link href="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/PNotify.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/BrightTheme.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" th:href="@{/css/login.css}">
 </head>
 
 <body>
     <main class="login-design">
         <div class="waves">
-            <img src="/image/loginPerson.png" alt="Persona en el diseño de login" />
+            <img th:src="@{/image/loginPerson.png}" alt="Persona en el diseño de login" />
         </div>
         <div class="login">
             <div class="login-data">
-                <img src="/image/logoLPS.png" alt="Logo de la plataforma" style="width: 300px; height: 180px;" />
+                <img th:src="@{/image/logoLPS.png}" alt="Logo de la plataforma" style="width: 300px; height: 180px;" />
                 <h1>Inicio de Sesión</h1>
                 <!-- Formulario de inicio de sesión -->
                 <form th:action="@{/login}" id="login-form" method="post" class="login-form">
