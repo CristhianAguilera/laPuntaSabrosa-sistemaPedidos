@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.utp.sistema_comandas.model.Mesa;
 import com.utp.sistema_comandas.service.MesaService;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class MesasController {
 
@@ -24,7 +26,7 @@ public class MesasController {
     private MesaService mesaService;
 
     @GetMapping("/admin/Mesas")
-    public String Mesas(Model model) {
+    public String Mesas(Model model,HttpSession session) {
         List<Mesa> listaMesas = mesaService.listarTodas();
         model.addAttribute("mesas", listaMesas);
         return "/admin/Mesas";
@@ -50,7 +52,7 @@ public class MesasController {
     }
 
     @GetMapping("/mozo/mesasMozo")
-    public String mesasMozo(Model model) {
+    public String mesasMozo(Model model,HttpSession session) {
         List<Mesa> listaMesas = mesaService.listarTodas();
         model.addAttribute("mesasM", listaMesas);
         return "/mozo/mesasMozo"; 
