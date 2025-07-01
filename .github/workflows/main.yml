@@ -48,13 +48,13 @@ jobs:
         echo "Esperando a que el servicio de MySQL esté activo..."
         sleep 20
 
-    - name: Configurar variables de entorno
+    - name: Configurar variables de entorno para Spring
       run: |
-        echo "DB_HOST=localhost" >> $GITHUB_ENV
-        echo "DB_PORT=3306" >> $GITHUB_ENV
-        echo "DB_NAME=restaurante2" >> $GITHUB_ENV
-        echo "DB_USER=root" >> $GITHUB_ENV
-        echo "DB_PASS=" >> $GITHUB_ENV
+        echo "SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/restaurante2" >> $GITHUB_ENV
+        echo "SPRING_DATASOURCE_USERNAME=root" >> $GITHUB_ENV
+        echo "SPRING_DATASOURCE_PASSWORD=" >> $GITHUB_ENV
+        echo "SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver" >> $GITHUB_ENV
+        echo "SPRING_JPA_HIBERNATE_DDL_AUTO=update" >> $GITHUB_ENV
 
     - name: Build with Maven
       run: mvn -B package --file pom.xml 
