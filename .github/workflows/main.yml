@@ -52,7 +52,7 @@ jobs:
       run: |
         echo "SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/restaurante2" >> $GITHUB_ENV
         echo "SPRING_DATASOURCE_USERNAME=root" >> $GITHUB_ENV
-        echo "SPRING_DATASOURCE_PASSWORD=root" >> $GITHUB_ENV
+        echo "SPRING_DATASOURCE_PASSWORD=" >> $GITHUB_ENV
         echo "SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver" >> $GITHUB_ENV
         echo "SPRING_JPA_HIBERNATE_DDL_AUTO=update" >> $GITHUB_ENV
 
