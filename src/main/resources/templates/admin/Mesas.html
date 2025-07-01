@@ -24,7 +24,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css"
         integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
 
-    <link rel="stylesheet" href="/css/mesasAdmin.css">
+    <link rel="stylesheet" th:href="@{/css/mesasAdmin.css}">
 </head>
 
 <body>
@@ -43,6 +43,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             </div>
 
             <div id="contenedorMesas" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
+
+                <div th:if="${#lists.isEmpty(mesas)}" class="col-12">
+                    <p class="text-center text-muted">No hay mesas registradas.</p>
+                </div>
+
 
                 <div th:each="mesa : ${mesas}" class="col">
                     <div class="bg-white p-2 rounded shadow-sm text-center">

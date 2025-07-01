@@ -1,5 +1,6 @@
 package com.utp.sistema_comandas.Controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -27,7 +28,7 @@ public class MesasController {
 
     @GetMapping("/admin/Mesas")
     public String Mesas(Model model,HttpSession session) {
-        List<Mesa> listaMesas = mesaService.listarTodas();
+        List<Mesa> listaMesas = Optional.ofNullable(mesaService.listarTodas()).orElse(new ArrayList<>());
         model.addAttribute("mesas", listaMesas);
         return "/admin/Mesas";
     }
@@ -53,7 +54,7 @@ public class MesasController {
 
     @GetMapping("/mozo/mesasMozo")
     public String mesasMozo(Model model,HttpSession session) {
-        List<Mesa> listaMesas = mesaService.listarTodas();
+        List<Mesa> listaMesas = Optional.ofNullable(mesaService.listarTodas()).orElse(new ArrayList<>());
         model.addAttribute("mesasM", listaMesas);
         return "/mozo/mesasMozo"; 
     }
