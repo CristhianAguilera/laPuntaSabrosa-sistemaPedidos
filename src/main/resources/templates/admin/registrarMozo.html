@@ -9,20 +9,12 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     <title>DOT-MOZOS</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <!-- Estilos de PNotify -->
     <link href="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/PNotify.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/BrightTheme.css" rel="stylesheet">
-
-    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@200;500;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css"
-        integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
 
     <!--Estilos css-->
     <link rel="stylesheet" th:href="@{/css/registrarMozo.css}">
@@ -48,8 +40,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                         <!-- Nombres -->
                         <div class="col-md-4 mb-3">
                             <label for="Nombre" class="form-label">Nombres</label>
-                            <input type="text" class="form-control" id="Nombre" name="Nombre"
-                               required>
+                            <input type="text" class="form-control" id="Nombre" name="Nombre" required>
                             <small id="Nombre-error" class="text-danger"></small>
                         </div>
 
@@ -57,8 +48,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                         <!-- Apellidos -->
                         <div class="col-md-4 mb-3">
                             <label for="Apellido" class="form-label">Apellidos</label>
-                            <input type="text" class="form-control" id="Apellido" name="Apellido"
-                                required>
+                            <input type="text" class="form-control" id="Apellido" name="Apellido" required>
                             <small id="Apellido-error" class="text-danger"></small>
                         </div>
 
@@ -98,77 +88,41 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                         </center>
                     </div>
                 </form>
-
             </div>
         </div>
     </main>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', () => {
             const campos = {
-                Nombre: {
-                    regex: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/,
-                    mensaje: 'Solo se permiten letras.',
-                    soloLetras: true
-                },
-                Apellido: {
-                    regex: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/,
-                    mensaje: 'Solo se permiten letras.',
-                    soloLetras: true
-                },
-                Dni: {
-                    regex: /^\d{8}$/,
-                    mensaje: 'Debe contener exactamente 8 números.',
-                    soloNumeros: true
-                },
-                Telefono: {
-                    regex: /^\d{9}$/,
-                    mensaje: 'Debe contener exactamente 9 números.',
-                    soloNumeros: true
-                },
-                Correo: {
-                    regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    mensaje: 'Formato de correo inválido.'
-                },
-                contrasena: {
-                    regex: /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/,
-                    mensaje: 'Mínimo 8 caracteres, una mayúscula, un número y un símbolo.'
-                }
+                Nombre: { regex: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/, mensaje: 'Solo letras.', soloLetras: true },
+                Apellido: { regex: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/, mensaje: 'Solo letras.', soloLetras: true },
+                Dni: { regex: /^\d{8}$/, mensaje: '8 números exactos.', soloNumeros: true },
+                Telefono: { regex: /^\d{9}$/, mensaje: '9 números exactos.', soloNumeros: true },
+                Correo: { regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, mensaje: 'Correo inválido.' },
+                contrasena: { regex: /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/, mensaje: 'Mínimo 8 caracteres, mayúscula, número y símbolo.' }
             };
 
-            Object.keys(campos).forEach(id => {
+            for (const [id, { regex, mensaje, soloLetras, soloNumeros }] of Object.entries(campos)) {
                 const input = document.getElementById(id);
-                const error = document.getElementById(id + '-error');
+                const error = document.getElementById(`${id}-error`);
 
-                // Validación en tiempo real
-                input.addEventListener('input', function () {
-                    if (campos[id].regex.test(input.value.trim())) {
-                        error.textContent = '';
-                        input.classList.remove('is-invalid');
-                        input.classList.add('is-valid');
-                    } else {
-                        error.textContent = campos[id].mensaje;
-                        input.classList.add('is-invalid');
-                        input.classList.remove('is-valid');
-                    }
+                if (!input) continue;
+
+                input.addEventListener('input', () => {
+                    const esValido = regex.test(input.value.trim());
+                    input.classList.toggle('is-valid', esValido);
+                    input.classList.toggle('is-invalid', !esValido);
+                    error.textContent = esValido ? '' : mensaje;
                 });
 
-                // Bloqueo de caracteres inválidos
-                input.addEventListener('keypress', function (e) {
-                    const key = e.key;
-
-                    if (campos[id].soloLetras && !/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]$/.test(key)) {
-                        e.preventDefault();
-                    }
-
-                    if (campos[id].soloNumeros && !/^\d$/.test(key)) {
-                        e.preventDefault();
-                    }
+                input.addEventListener('keypress', (e) => {
+                    if (soloLetras && !/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]$/.test(e.key)) e.preventDefault();
+                    if (soloNumeros && !/^\d$/.test(e.key)) e.preventDefault();
                 });
-            });
+            }
         });
     </script>
-
 
 
     <script>
@@ -176,8 +130,26 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             event.preventDefault();
 
             const form = this;
-            const formData = new FormData(form);
+            let esValido = true;
 
+            // Verificar si hay algún campo inválido
+            form.querySelectorAll('input').forEach(input => {
+                if (!input.classList.contains('is-valid')) {
+                    esValido = false;
+                    input.classList.add('is-invalid'); // fuerza la clase roja
+                }
+            });
+
+            if (!esValido) {
+                PNotify.error({
+                    text: "Por favor, corrige los campos inválidos antes de registrar.",
+                    delay: 3000
+                });
+                return; // No envía nada si hay errores
+            }
+
+            // Si todo es válido, enviar
+            const formData = new FormData(form);
             fetch("/registroMozos", {
                 method: "POST",
                 body: formData
@@ -189,7 +161,12 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                             text: "¡Mozo registrado exitosamente!",
                             delay: 3000
                         });
-                        form.reset(); // limpia el formulario
+                        form.reset();
+
+                        // Quitar clases de validación
+                        form.querySelectorAll('input').forEach(input => {
+                            input.classList.remove('is-valid', 'is-invalid');
+                        });
                     } else if (data.error) {
                         PNotify.error({
                             text: data.error,
@@ -206,9 +183,30 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         });
     </script>
 
+    <script>
+        document.getElementById('logoutLink').addEventListener('click', function (event) {
+            event.preventDefault();
+            Swal.fire({
+                title: '¿Desea cerrar sesión?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, cerrar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logoutForm').submit();
+                }
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
         integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
         crossorigin="anonymous"></script>
 
     <!--Iconos-->

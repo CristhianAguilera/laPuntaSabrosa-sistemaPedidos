@@ -57,6 +57,19 @@
             </div>
             <hr>
 
+            <div class="row mb-3 mt-4">
+                <div class="col-md-4">
+                    <input type="text" id="filtroNombre" class="form-control" placeholder="Buscar por nombre...">
+                </div>
+                <div class="col-md-4">
+                    <select id="filtroCategoria" class="form-select">
+                        <option value="">Todas las categorías</option>
+                        <option th:each="cat : ${categorias}" th:value="${cat.nombre}" th:text="${cat.nombre}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <hr>
             <div class="table-responsive">
 
                 <table class="table table-striped mt-2" id="TablaDatos">
@@ -68,23 +81,27 @@
                             <th>Acciones</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="tablaPlatos">
                         <tr th:each="producto : ${productos}">
                             <td th:text="${producto.nombre}"></td>
                             <td>S/. <span th:text="${producto.precio}"></span></td>
                             <td th:text="${producto.categoria.nombre}"></td>
+
                             <td class="fila-b">
-                                 <button class="btn btn-warning btn-consulta" data-bs-toggle="modal"
+                                <button class="btn btn-warning btn-consulta" data-bs-toggle="modal"
                                     data-bs-target="#editarDatos"
                                     th:attr="data-producto-id=${producto.id}">✏️Editar</button>
 
+                                <button type="button" class="btn btn-danger btn-eliminar"
+                                    th:attr="data-producto-id=${producto.id}">🗑️Eliminar</button>
                             </td>
-                            
+
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
+
         <div class="modal fade" id="editarDatos" tabindex="-1" aria-labelledby="editarDatosLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl modal-dialog-centered">
                 <div class="modal-content">
@@ -128,6 +145,7 @@
         </div>
     </main>
 
+
     <script>
         document.getElementById("registar-plato-carta").addEventListener("submit", function (event) {
             event.preventDefault();
@@ -164,7 +182,8 @@
                 });
         });
     </script>
-<script>
+
+    <script>
         document.addEventListener("DOMContentLoaded", function () {
             const modal = new bootstrap.Modal(document.getElementById('editarDatos'));
             //selecciona al elemento con la clase btn-consulta
@@ -228,6 +247,104 @@
                 });
         });
     </script>
+
+
+    <script>
+        document.querySelectorAll('.btn-eliminar').forEach(button => {
+            button.addEventListener('click', function () {
+                const productoId = this.getAttribute('data-producto-id');
+                Swal.fire({
+                    title: '¿Desea meliminar este plato?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        const formData = new FormData();
+                        formData.append("id", productoId);  // Aquí "id" debe coincidir con el nombre del atributo en Usuario
+
+                        fetch("/eliminar-Plato-carta", {
+                            method: "POST",
+                            body: formData
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    PNotify.success({
+                                        text: "¡Palto de carta eliminado exitosamente!",
+                                        delay: 1000
+                                    });
+                                    setTimeout(() => {
+                                        location.reload();
+                                    }, 1000);
+                                } else if (data.error) {
+                                    PNotify.error({
+                                        text: data.error,
+                                        delay: 3000
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                PNotify.error({
+                                    text: "Error de red: " + error.message,
+                                    delay: 3000
+                                });
+                            });
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        document.getElementById('logoutLink').addEventListener('click', function (event) {
+            event.preventDefault();
+            Swal.fire({
+                title: '¿Desea cerrar sesión?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, cerrar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logoutForm').submit();
+                }
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const inputNombre = document.getElementById('filtroNombre');
+            const selectCategoria = document.getElementById('filtroCategoria');
+            const filas = document.querySelectorAll('#tablaPlatos tr');
+
+            function aplicarFiltros() {
+                const textoNombre = inputNombre.value.toLowerCase();
+                const categoriaSeleccionada = selectCategoria.value.toLowerCase();
+
+                filas.forEach(fila => {
+                    const nombre = fila.children[0].textContent.toLowerCase();
+                    const categoria = fila.children[2].textContent.toLowerCase();
+
+                    const coincideNombre = nombre.includes(textoNombre);
+                    const coincideCategoria = !categoriaSeleccionada || categoria === categoriaSeleccionada;
+
+                    if (coincideNombre && coincideCategoria) {
+                        fila.style.display = '';
+                    } else {
+                        fila.style.display = 'none';
+                    }
+                });
+            }
+
+            inputNombre.addEventListener('input', aplicarFiltros);
+            selectCategoria.addEventListener('change', aplicarFiltros);
+        });
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!--Iconos-->

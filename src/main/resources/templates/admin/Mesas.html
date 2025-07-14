@@ -37,7 +37,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             <h3>Mesas</h3>
 
             <div class="Acciones">
-                <button id="btnAgregarMesa" type="button" class="btn">
+                <button id="btnAgregarMesa" type="button" class="btn btn-primary">
                     <ion-icon name="add-outline"></ion-icon> Añadir Mesa
                 </button>
             </div>
@@ -50,12 +50,28 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                             <ion-icon name="albums-outline"></ion-icon>
                             <strong>Mesa <span th:text="${mesa.numero}"></span></strong><br>
                         </div>
-                        <div class="datosMesa">
-                            <ion-icon name="people-outline"></ion-icon> <span th:text="${mesa.cantidadPersonas}"></span>
-                            <ion-icon name="cash-outline"></ion-icon> S/. <span th:text="${mesa.montoTotal}"></span>
-                            <ion-icon name="person-outline"></ion-icon> <span th:text="${mesa.nombreCliente}"></span>
-                            <ion-icon name="person-circle-outline"></ion-icon> <span
-                                th:text="${mesa.nombreMozo}"></span>
+                        <div class="datosMesas">
+
+                            <div class="datosMesa">
+                                <ion-icon name="people-outline"></ion-icon>
+                                <span th:text="${mesa.cantidadPersonas}"></span>
+                            </div>
+
+                            <div class="datosMesa">
+                                <ion-icon name="cash-outline"></ion-icon>
+                                <span th:text="${mesa.montoTotal}"></span>
+                            </div>
+
+                            <div class="datosMesa">
+                                <ion-icon name="person-outline"></ion-icon>
+                                <span th:text="${mesa.nombreCliente}"></span>
+                            </div>
+
+                            <div class="datosMesa">
+                                <ion-icon name="person-circle-outline"></ion-icon>
+                                <span th:text="${mesa.nombreMozo}"></span>
+                            </div>
+
                         </div>
                         <button class="btn btn-danger btn-sm mt-2 btnEliminarMesa"
                             th:attr="data-numero-mesa=${mesa.numero}">
@@ -140,7 +156,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 const numeroMesa = btn.getAttribute('data-numero-mesa');
 
                 Swal.fire({
-                    title: '¿Eliminar esta Mesa?',
+                    title: `¿Eliminar esta Mesa?`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Sí, eliminar',
@@ -151,7 +167,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                         const formData = new FormData();
                         formData.append("numeroMesa", numeroMesa);
 
-                        fetch('/eliminarMesa', {
+                        fetch(`/eliminarMesa`, {
                             method: "POST",
                             body: formData
                         })
@@ -181,6 +197,23 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     }
                 });
             }
+        });
+    </script>
+
+    <script>
+        document.getElementById('logoutLink').addEventListener('click', function (event) {
+            event.preventDefault();
+            Swal.fire({
+                title: '¿Desea cerrar sesión?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, cerrar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logoutForm').submit();
+                }
+            });
         });
     </script>
 

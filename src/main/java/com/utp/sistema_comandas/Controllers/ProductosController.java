@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.utp.sistema_comandas.model.Categoria;
@@ -56,6 +57,7 @@ public class ProductosController {
         }
 
     }
+
     @GetMapping("/editarProductoModal/{productoId}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> obtenerproductoporId(@PathVariable Long productoId, Model model) {
@@ -102,78 +104,15 @@ public class ProductosController {
         }
     }
 
-//--------------------------------------------------Menu Diario-------------------------------------------------
-
-    @GetMapping("/admin/menuDiario")
-    public String menuDiario(HttpSession session, Model model) {
-        List<Producto> Productosmenu = productoService.listarPorTipo("Menu");
-        model.addAttribute("Productosmenu", Productosmenu);
-
-        List<Categoria> Categorias = categoriaService.listarTodasCategorias();
-        model.addAttribute("categorias", Categorias);
-
-        return "admin/menuDiario";
-    }
-
-    @PostMapping("/registro-plato-menu")
+    @PostMapping("/eliminar-Plato-carta")
     @ResponseBody
-    public ResponseEntity<?> registroplatomenu(@ModelAttribute Producto producto) {
+    public ResponseEntity<?> eliminarPlatocarta(@RequestParam("id") Long id) {
         try {
-            producto.setTipo("Menu");
-
-            productoService.guardarProducto(producto);
+            productoService.eliminar(id);
             return ResponseEntity.ok().body(Map.of("success", true));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Error al registrar Plato en el menú"));
-        }
-
-    }
-
-@GetMapping("/editarMenuModal/{productoId}")
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> obtenerMenuporId(@PathVariable Long productoId, Model model) {
-
-        Optional<Producto> ProductoOpt = productoService.obtenerPorId(productoId);
-
-        // verificamos que permiso no sea nulo y que tenga el estado de Pendiente
-        if (ProductoOpt.isPresent()) {
-            Producto producto = ProductoOpt.get();
-
-            Map<String, Object> productoData = new HashMap<>();
-
-            productoData.put("nombre", producto.getNombre());
-            productoData.put("precio", producto.getPrecio());
-            productoData.put("id", producto.getId());
-            productoData.put("categoria", producto.getCategoria().getId());
-
-            return ResponseEntity.ok(productoData);
-        } else {
-            // retorna un error si no se enuentra el permiso
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "No se encontró esta categoria."));
+            return ResponseEntity.badRequest().body(Map.of("error", "Error al eliminar Plato de la Carta"));
         }
     }
 
-    @PostMapping("/editar-plato-Menu")
-    @ResponseBody
-    public ResponseEntity<?> editarMenu(@ModelAttribute Producto producto) {
-        try {
-            Optional<Producto> productoOpt = productoService.obtenerPorId(producto.getId());
-            if (productoOpt.isPresent()) {
-                Producto productoAct = productoOpt.get();
-
-                productoAct.setNombre(producto.getNombre());
-                productoAct.setPrecio(producto.getPrecio());
-                productoAct.setCategoria(producto.getCategoria());
-
-                productoService.guardarProducto(productoAct);
-                return ResponseEntity.ok().body(Map.of("success", true));
-            } else {
-                return ResponseEntity.badRequest().body(Map.of("error", "Producto no encontrado"));
-            }
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Error al editar Plato del menú"));
-        }
-    }
-
-    
 }
