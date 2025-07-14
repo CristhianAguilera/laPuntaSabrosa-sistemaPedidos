@@ -37,16 +37,23 @@
                 <form id="registCategoria" method="post" class="row g-3 mb-4">
                     <input type="hidden">
                     <div class="col-md-6">
-                        <label for="Nombre" class="form-label">Nombre de Categoria</label>
-                        <input type="text" class="form-control" name="Nombre" id="Nombre"
-                            placeholder="Nombre de categoría" oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '')" required>
-                        <small id="Nombre-error" class="text-danger"></small>
+                        <label for="nombre" class="form-label">Nombre de Categoria</label>
+                        <input type="text" class="form-control" name="nombre" id="nombre"
+                            placeholder="Nombre de categoría" required>
                     </div>
 
                     <button class="btn btn-success" type="submit">Agregar</button>
 
                 </form>
             </div>
+            <hr>
+            <div class="row mt-3 mb-2">
+                <div class="col-md-6">
+                    <input type="text" id="filtroCategoriaNombre" class="form-control"
+                        placeholder="Buscar categoría por nombre...">
+                </div>
+            </div>
+            <hr>
             <!-- Tabla de categorías -->
             <div class="table-responsive">
                 <table class="table table-striped mt-2" id="TablaDatos">
@@ -57,7 +64,7 @@
                             <th>Acciones</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="tablaCategorias">
                         <tr th:each="categoria : ${categorias}">
                             <td th:text="${categoria.id}"></td>
                             <td th:text="${categoria.nombre}"></td>
@@ -87,9 +94,9 @@
                         <form method="post" id="editar-categoria">
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <label for="Nombre" class="form-label">Nombre (*)</label>
-                                    <input type="text" class="form-control" id="nombrecat" name="Nombre"
-                                        placeholder="Nombre" oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '')" required>
+                                    <label for="nombre" class="form-label">Nombre (*)</label>
+                                    <input type="text" class="form-control" id="nombrecat" name="nombre"
+                                        placeholder="Nombre">
                                 </div>
 
                             </div>
@@ -108,35 +115,6 @@
 
     </main>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const campos = {
-                Nombre: {
-                    regex: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/,
-                    mensaje: 'Solo se permiten letras.',
-                }
-            };
-
-            Object.keys(campos).forEach(id => {
-                const input = document.getElementById(id);
-                const error = document.getElementById(id + '-error');
-
-                input.addEventListener('input', function () {
-                    if (campos[id].regex.test(input.value.trim())) {
-                        error.textContent = '';
-                        input.classList.remove('is-invalid');
-                        input.classList.add('is-valid');
-                    } else {
-                        error.textContent = campos[id].mensaje;
-                        input.classList.add('is-invalid');
-                        input.classList.remove('is-valid');
-                    }
-                });
-            });
-        });
-    </script>
-
-    
     <script>
         document.getElementById("registCategoria").addEventListener("submit", function (event) {
             event.preventDefault();
@@ -281,6 +259,43 @@
                                     delay: 3000
                                 });
                             });
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        document.getElementById('logoutLink').addEventListener('click', function (event) {
+            event.preventDefault();
+            Swal.fire({
+                title: '¿Desea cerrar sesión?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, cerrar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logoutForm').submit();
+                }
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const inputFiltro = document.getElementById('filtroCategoriaNombre');
+            const filas = document.querySelectorAll('#tablaCategorias tr');
+
+            inputFiltro.addEventListener('input', function () {
+                const texto = inputFiltro.value.toLowerCase();
+
+                filas.forEach(fila => {
+                    const nombreCategoria = fila.children[1].textContent.toLowerCase();
+                    if (nombreCategoria.includes(texto)) {
+                        fila.style.display = '';
+                    } else {
+                        fila.style.display = 'none';
                     }
                 });
             });
