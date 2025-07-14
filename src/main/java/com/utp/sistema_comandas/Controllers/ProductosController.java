@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.utp.sistema_comandas.model.Categoria;
@@ -56,6 +57,7 @@ public class ProductosController {
         }
 
     }
+
     @GetMapping("/editarProductoModal/{productoId}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> obtenerproductoporId(@PathVariable Long productoId, Model model) {
@@ -102,5 +104,15 @@ public class ProductosController {
         }
     }
 
+    @PostMapping("/eliminar-Plato-carta")
+    @ResponseBody
+    public ResponseEntity<?> eliminarPlatocarta(@RequestParam("id") Long id) {
+        try {
+            productoService.eliminar(id);
+            return ResponseEntity.ok().body(Map.of("success", true));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Error al eliminar Plato de la Carta"));
+        }
+    }
 
 }
