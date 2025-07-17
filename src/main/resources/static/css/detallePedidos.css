@@ -1,0 +1,67 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : 24 oct 2024, 23:32:41
+    Author     : ADVANCE
+*/
+
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('nav.css');
+
+* {
+    font-family: "Noto Serif", serif;
+}
+
+body {
+    background-color: #f7f3ef;
+    color: #4b2e2e;
+}
+
+
+main {
+    padding: 20px;
+
+
+}
+
+.Acciones button {
+    display: flex;
+}
+
+.Acciones {
+    margin-bottom: 20px;
+}
+
+ion-icon {
+    font-size: 23px;
+    color: #333;
+}
+
+/* Main Empleados */
+h2 {
+    text-align: center;
+}
+
+
+.categoria-card,
+.plato-card {
+    transition: transform 0.2s ease;
+}
+
+.categoria-card:hover,
+.plato-card:hover {
+    transform: scale(1.05);
+    background-color: #f8f9fa;
+}
+
+.fade {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.fade.show {
+    opacity: 1;
+}
