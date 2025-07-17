@@ -39,16 +39,318 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             <h3>Detalle Pedido</h3>
 
 
-            
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <div class="container-fluid">
 
-    <script type="module" src=" https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js "> </script>
-    <script nomodule src=" https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js "> </script>
+                <div class="row mt-3">
+                    <!-- Sección principal central -->
+                    <div class="col-md-4">
+                        <div id="vistaCategorias" class="fade show">
+                            <h5 class="text-center">Categorías</h5>
+                            <div class="row row-cols-2 row-cols-md-2 g-3 justify-content-center">
+                                <div th:each="cat : ${categorias}" class="col">
+                                    <div class="categoria-card p-3 text-center shadow-sm rounded bg-light"
+                                        style="cursor:pointer;" th:attr="data-id=${cat.id}, data-nombre=${cat.nombre}">
+                                        <strong th:text="${cat.nombre}"></strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-    <!-- Scripts de PNotify -->
-    <script src="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/PNotify.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/PNotifyButtons.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/PNotifyButtons.css" rel="stylesheet">
+                        <div id="vistaPlatos" style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 id="nombreCategoria"></h5>
+                                <button id="btnVolverCategorias" class="btn btn-secondary btn-sm">Volver</button>
+                            </div>
+                            <div class="row row-cols-2 row-cols-md-3 g-3" id="platosContainer">
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--lateral derecha Pedido -->
+                    <div class="col-md-8 bg-light p-2">
+
+                        <div class="table-responsive">
+                            <h5 class="text-center">Pedido</h5>
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Plato</th>
+                                        <th>Precio</th>
+                                        <th>Cantidad</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pedidoTablaBody">
+                                    <tr th:each="det : ${detalles}"
+                                        th:attr="data-id=${det.id}, data-producto-id=${det.producto.id}">
+
+                                        <td th:text="${det.producto.nombre}"></td>
+                                        <td th:text="${det.subtotal}" class="subtotal"></td>
+                                        <td th:text="${det.cantidad}" class="cantidad"></td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger btnEliminar"
+                                                th:attr="data-id=${det.id}">
+                                                <ion-icon name="remove-circle-outline"></ion-icon>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-end me-3 mt-2">
+                            <h5>Total: <span id="montoTotal"
+                                    th:text="'S/. ' + ${#numbers.formatDecimal(totalPedido, 1, 'POINT', 2, 'POINT')}">
+                                    S/. 0.00</span></h5>
+                        </div>
+                        <input type="hidden" id="pedidoId" th:value="${pedido.id}" />
+                        <button type="button" class="btn btn-success" id="btnGuardar">Guardar</button>
+
+                        <button class="btn btn-primary" th:onclick="'generarBoleta(' + ${pedido.id} + ')'">
+                            Generar Boleta
+                        </button>
+
+                        <button class="btn btn-danger" th:attr="data-id=${pedido.id}" onclick="finalizarPedido(this)">
+                            Finalizar Pedido y Cerrar Mesa
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => { // Dom cargado antes de ejecutar el script y html
+                const vistaCategorias = document.getElementById('vistaCategorias');
+                const vistaPlatos = document.getElementById('vistaPlatos');
+                const platosContainer = document.getElementById('platosContainer');
+                const nombreCategoria = document.getElementById('nombreCategoria');
+                const pedidoTablaBody = document.getElementById('pedidoTablaBody');
+                const montoTotalSpan = document.getElementById('montoTotal');
+
+
+                document.querySelectorAll('.categoria-card').forEach(cat => { // cuando el mozo haga clic en una categoría, se obtiene
+                    cat.addEventListener('click', () => {
+                        const catId = cat.getAttribute('data-id');
+                        const catNombre = cat.getAttribute('data-nombre');
+
+                        fetch(`/platosPorCategoria?id=${catId}`) // hace una petición al servidor para obtener los platos  Y MUESTRA LOS PLATOS 
+                            .then(res => res.json())
+                            .then(platos => {
+                                nombreCategoria.textContent = catNombre;
+
+                                vistaCategorias.classList.remove('show');
+                                setTimeout(() => {
+                                    vistaCategorias.style.display = 'none';
+
+                                    vistaPlatos.style.display = 'block';
+                                    setTimeout(() => {
+                                        vistaPlatos.classList.add('show');
+                                    }, 10);
+                                }, 200);
+
+                                platosContainer.innerHTML = '';
+
+                                platos.forEach(plato => { // Generar las tarjetas html
+                                    platosContainer.innerHTML += `
+                                <div class="col">
+                                    <div class="plato-card card p-2 text-center shadow-sm" 
+                                    style="cursor:pointer;"
+                                         data-id="${plato.id}"  
+                                         data-nombre="${plato.nombre}" 
+                                         data-precio="${plato.precio}">
+
+                                        <strong>${plato.nombre}</strong>
+                                        <p>S/. ${plato.precio}</p>
+                                    </div>
+                                </div>`;
+                                });
+
+                                document.querySelectorAll('.plato-card').forEach(p => { // Permite agregar nuevos platos 
+                                    p.addEventListener('click', () => {
+                                        const id = p.getAttribute('data-id');
+                                        const nombre = p.getAttribute('data-nombre');
+                                        const precio = parseFloat(p.getAttribute('data-precio'));
+                                        agregarPlato(id, nombre, precio);
+                                    });
+                                });
+                            });
+                    });
+                });
+
+                // 👉 Función para recalcular el total
+                function actualizarMontoTotal() {
+                    let total = 0;
+                    document.querySelectorAll('#pedidoTablaBody .subtotal').forEach(cell => {
+                        total += parseFloat(cell.textContent);
+                    });
+                    montoTotalSpan.textContent = `S/. ${total.toFixed(2)}`;
+                }
+
+                //Función para manejar clic en un plato
+                function agregarPlato(id, nombre, precio) {
+
+                    const filas = pedidoTablaBody.querySelectorAll('tr'); // Obtener todas las filas de la tabla pedido
+                    let encontrada = false;
+
+                    // Recorre y compara el nombre de cada fila con el nuevo plato
+                    filas.forEach(fila => {
+                        const nombrePlato = fila.querySelector('td')?.textContent.trim();
+                        if (nombrePlato === nombre) {
+
+                            // Ya está, aumentar cantidad y subtotal
+                            const cantidadTd = fila.querySelector('.cantidad');
+                            const subtotalTd = fila.querySelector('.subtotal');
+
+                            let cantidad = parseInt(cantidadTd.textContent);
+                            cantidad++;
+                            cantidadTd.textContent = cantidad;
+                            subtotalTd.textContent = (precio * cantidad).toFixed(2);
+                            encontrada = true;
+                        }
+                    });
+
+                    if (!encontrada) {
+                        pedidoTablaBody.innerHTML += `
+                <tr data-producto-id="${id}">
+                    <td class="nombrePlato">${nombre}</td>
+                    <td class="subtotal">${parseFloat(precio).toFixed(2)}</td>
+                    <td class="cantidad">1</td>
+                    <td>
+                        <button type="button" class="btn btn-danger btnEliminar">
+                            <ion-icon name="trash-outline"></ion-icon>
+                        </button>
+                    </td>
+                </tr>`;
+                    }
+
+                    actualizarMontoTotal();
+                }
+
+                //Evento para eliminar platos
+                pedidoTablaBody.addEventListener('click', e => {  // cualquier clic en la tabla y verifica si es un botón de eliminar
+                    if (e.target.closest('.btnEliminar')) {
+                        const fila = e.target.closest('tr');
+                        const cantidadTd = fila.querySelector('.cantidad');
+                        const subtotalTd = fila.querySelector('.subtotal');
+                        const precioUnitario = parseFloat(subtotalTd.textContent) / parseInt(cantidadTd.textContent);
+
+                        let cantidad = parseInt(cantidadTd.textContent); // Restar la unidad
+                        cantidad--;
+
+                        if (cantidad > 0) { // actualiza si es mayor a 0
+                            cantidadTd.textContent = cantidad;
+                            subtotalTd.textContent = (precioUnitario * cantidad).toFixed(2);
+                        } else {
+                            fila.remove();
+                        }
+
+                        actualizarMontoTotal();
+                    }
+                });
+
+                document.getElementById("btnGuardar").addEventListener("click", function () { // Click en el boton Guardar
+                    const pedidoId = document.getElementById("pedidoId").value;
+                    const filas = document.querySelectorAll("#pedidoTablaBody tr");
+
+                    const detalles = [];
+                    const nuevasFilas = [];
+
+                    filas.forEach(fila => {
+                        const productoIdStr = fila.getAttribute("data-producto-id");
+                        if (!productoIdStr) {
+                            console.warn("Fila con productoId inválido", fila);
+                            return; // salta esta fila
+                        }
+                        // Construye el detalle 
+                        const productoId = Number(productoIdStr);
+                        const cantidad = parseInt(fila.querySelector(".cantidad").textContent);
+                        const subtotal = parseFloat(fila.querySelector(".subtotal").textContent);
+
+                        detalles.push({
+                            productoId,
+                            cantidad,
+                            subtotal
+                        });
+
+                        if (!fila.hasAttribute("data-id")) { // Si no tiene data-id, es una nueva fila
+                            nuevasFilas.push(fila);
+                        }
+                    });
+
+                    fetch("/registar-detalle-pedido", { // Envia los datos al backend como JSON
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ pedidoId, detalles })
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                //  se asignan los nuevos IDs a las filas agregadas
+                                data.nuevosIds?.forEach((id, index) => {
+                                    if (nuevasFilas[index]) {
+                                        nuevasFilas[index].setAttribute("data-id", id);
+                                    }
+                                });
+
+                                PNotify.success({
+                                    text: "Guardado correctamente",
+                                    delay: 1000
+                                });
+
+                            } else {
+                                PNotify.error({
+                                    text: data.error || "Error al guardar",
+                                    delay: 3000
+                                });
+                            }
+                        });
+                });
+
+                document.getElementById('btnVolverCategorias').addEventListener('click', () => {
+                    vistaPlatos.classList.remove('show');
+                    setTimeout(() => {
+                        vistaPlatos.style.display = 'none';
+
+                        vistaCategorias.style.display = 'block';
+                        setTimeout(() => {
+                            vistaCategorias.classList.add('show');
+                        }, 10);
+                    }, 200);
+                });
+            });
+        </script>
+
+        <script>
+            document.getElementById('logoutLink').addEventListener('click', function (event) { // capturar el click
+                event.preventDefault();
+                Swal.fire({
+                    title: '¿Desea cerrar sesión?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, cerrar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('logoutForm').submit();
+                    }
+                });
+            });
+        </script>
+
+
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <script type="module" src=" https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js "> </script>
+        <script nomodule src=" https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js "> </script>
+
+        <!-- Scripts de PNotify -->
+        <script src="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/PNotify.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/PNotifyButtons.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/PNotifyButtons.css" rel="stylesheet">
 
 </body>
 
