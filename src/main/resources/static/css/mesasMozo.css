@@ -20,8 +20,11 @@ body {
     color: #4b2e2e;
 }
 
+
 main {
     padding: 20px;
+
+
 }
 
 .Acciones button{
@@ -45,7 +48,7 @@ main {
     margin-left: 5px;
 }
 
-.datosMesa {
+.datosMesas {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -54,6 +57,11 @@ main {
     color: #333;
 }
 
+.datosMesa{
+  display: flex;
+  justify-content: space-between;
+
+}
 
 ion-icon {
     font-size: 23px;
@@ -63,4 +71,17 @@ ion-icon {
 /* Main Empleados */
 h2 {
     text-align: center;
+}
+
+.mesa-libre {
+    background-color: #58da76 !important;
+    color: white;
+}
+.mesa-ocupada {
+    background-color: #cd4855 !important;
+    color: white;
+}
+
+.mesaClick{
+    cursor: pointer;
 }
