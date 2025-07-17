@@ -25,6 +25,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
 
     <link rel="stylesheet" th:href="@{/css/mesasMozo.css}">
+
 </head>
 
 <body>
@@ -40,26 +41,159 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             <div id="contenedorMesas" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
 
                 <div th:each="mesa : ${mesasM}" class="col">
-                    <div class="bg-white p-2 rounded shadow-sm text-center">
+                    <div class="bg-white p-2 rounded shadow-sm text-center mesaClick"
+                        th:attr="data-numero=${mesa.numero},data-ocupada=${mesa.ocupada}"
+                        th:classappend="${mesa.ocupada} ? ' mesa-ocupada' : ' mesa-libre'">
                         <div class="tituloMesa">
                             <ion-icon name="albums-outline"></ion-icon>
                             <strong>Mesa <span th:text="${mesa.numero}"></span></strong><br>
                         </div>
-                        <div class="datosMesa">
-                            <ion-icon name="people-outline"></ion-icon> <span th:text="${mesa.cantidadPersonas}"></span>
-                            <ion-icon name="cash-outline"></ion-icon> S/. <span th:text="${mesa.montoTotal}"></span>
-                            <ion-icon name="person-outline"></ion-icon> <span th:text="${mesa.nombreCliente}"></span>
-                            <ion-icon name="person-circle-outline"></ion-icon> <span
-                                th:text="${mesa.nombreMozo}"></span>
+                        <div class="datosMesas">
+
+                            <div class="datosMesa">
+                                <ion-icon name="people-outline"></ion-icon>
+                                <span th:text="${mesa.cantidadPersonas}"></span>
+                            </div>
+
+                            <div class="datosMesa">
+                                <ion-icon name="cash-outline"></ion-icon>
+                                <span th:text="${mesa.montoTotal}"></span>
+                            </div>
+
+                            <div class="datosMesa">
+                                <ion-icon name="person-outline"></ion-icon>
+                                <span th:text="${mesa.nombreCliente}"></span>
+                            </div>
+
+                            <div class="datosMesa">
+                                <ion-icon name="person-circle-outline"></ion-icon>
+                                <span th:text="${mesa.nombreMozo}"></span>
+                            </div>
+
                         </div>
                     </div>
                 </div>
 
             </div>
+
+            <div class="container mt-4">
+                <h5>Leyenda de estados de mesas</h5>
+                <div class="d-flex flex-wrap gap-3 mt-2">
+                    <div class="d-flex align-items-center">
+                        <div class="rounded-circle" style="width: 20px; height: 20px; background-color: rgb(45, 211, 45);"></div>
+                        <span class="ms-2">Mesa libre</span>
+                    </div>
+
+                    <div class="d-flex align-items-center">
+                        <div class="rounded-circle" style="width: 20px; height: 20px; background-color: red;"></div>
+                        <span class="ms-2">Mesa con pedido pendiente</span>
+                    </div>
+                    
+                </div>
+            </div>
+
         </main>
     </div>
 
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.mesaClick').forEach(mesa => {
+                mesa.addEventListener('click', () => {
+                    const numeroMesa = mesa.getAttribute('data-numero');
+                    const estaOcupada = mesa.getAttribute('data-ocupada') === 'true';
+
+                    if (estaOcupada) {
+                        // Llama al backend para verificar si la mesa le pertenece al mozo
+                        fetch('/verificarMozoMesa', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ numeroMesa })
+                        })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.autorizado) {
+                                    window.location.href = `/mozo/detallePedido?numeroMesa=${numeroMesa}`;
+                                } else {
+                                    PNotify.error({
+                                        text: data.mensaje || 'No tienes acceso a esta mesa',
+                                        delay: 2500
+                                    });
+                                }
+                            });
+                    } else {
+                        Swal.fire({
+                            title: 'Aperturar Mesa',
+                            html:
+                                `<input id="swal-cantidad" class="swal2-input" placeholder="Cantidad de personas" type="number">
+     <input id="swal-cliente" class="swal2-input" placeholder="Nombre del cliente">`,
+                            focusConfirm: false,
+                            showCancelButton: true,
+                            confirmButtonText: 'Aperturar',
+                            cancelButtonText: 'Cancelar',
+                            preConfirm: () => {
+                                const cantidad = document.getElementById('swal-cantidad').value;
+                                const cliente = document.getElementById('swal-cliente').value;
+                                if (!cantidad || !cliente) {
+                                    Swal.showValidationMessage('Completa todos los campos');
+                                }
+                                return { cantidad, cliente };
+                            }
+                        }).then((result) => {
+                            const numeroMesa = mesa.getAttribute('data-numero');
+                            const { cantidad, cliente } = result.value;
+
+                            // Enviar a backend
+                            fetch('/aperturarMesa', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    numero: numeroMesa,
+                                    cantidadPersonas: cantidad,
+                                    nombreCliente: cliente
+                                })
+                            })
+                                .then(res => res.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        PNotify.success({
+                                            text: 'Mesa aperturada exitosamente',
+                                            delay: 1000
+                                        });
+                                        setTimeout(() => {
+                                            location.reload();
+                                        }, 1000);
+                                        window.location.href = `/mozo/detallePedido?numeroMesa=${numeroMesa}`;
+                                    } else if (data.error) {
+                                        PNotify.error({
+                                            text: data.error,
+                                            delay: 3000
+                                        });
+                                    }
+                                });
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        document.getElementById('logoutLink').addEventListener('click', function (event) {
+            event.preventDefault();
+            Swal.fire({
+                title: '¿Desea cerrar sesión?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, cerrar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logoutForm').submit();
+                }
+            });
+        });
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
