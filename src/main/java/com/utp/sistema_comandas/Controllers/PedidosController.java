@@ -34,7 +34,6 @@ import com.utp.sistema_comandas.service.HistorialPedidoService;
 import com.utp.sistema_comandas.service.MesaService;
 import com.utp.sistema_comandas.service.PedidoService;
 import com.utp.sistema_comandas.service.ProductoService;
-import com.utp.sistema_comandas.service.boletaService;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -58,32 +57,7 @@ public class PedidosController {
     private DetallePedidoService detallePedidoService;
 
     @Autowired
-    private boletaService boletaService;
-
-    @Autowired
     private HistorialPedidoService historialPedidoService;
-
-    @PostMapping("/verificarMozoMesa")
-    @ResponseBody
-    public ResponseEntity<?> verificarMozoMesa(@RequestBody Map<String, Object> payload, HttpSession session) {
-        int numeroMesa = Integer.parseInt(payload.get("numeroMesa").toString());
-        Optional<Mesa> optMesa = mesaService.buscarPorNumero(numeroMesa);
-
-        if (optMesa.isEmpty()) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Mesa no encontrada"));
-        }
-
-        Mesa mesa = optMesa.get();
-        Usuario mozo = (Usuario) session.getAttribute("usuario");
-
-        boolean pertenece = mesa.getNombreMozo().equalsIgnoreCase(mozo.getNombre() + " " + mozo.getApellido());
-
-        if (!pertenece) {
-            return ResponseEntity.ok(Map.of("autorizado", false, "mensaje", "Esta mesa no te pertenece"));
-        }
-
-        return ResponseEntity.ok(Map.of("autorizado", true));
-    }
 
     @GetMapping("/mozo/detallePedido")
     public String detallePedido(@RequestParam("numeroMesa") int numeroMesa,
