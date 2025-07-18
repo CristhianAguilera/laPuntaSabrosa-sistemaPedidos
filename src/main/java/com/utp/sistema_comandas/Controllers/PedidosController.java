@@ -101,4 +101,59 @@ public class PedidosController {
         return ResponseEntity.ok(resultado);
     }
 
+    @PostMapping("/registar-detalle-pedido")
+    public ResponseEntity<?> guardarDetallePedido(@RequestBody PedidoRequest request) {
+        Optional<Pedido> optPedido = pedidoService.obtenerPorId(request.getPedidoId());
+        if (optPedido.isEmpty())
+            return ResponseEntity.badRequest().body(Map.of("error", "Pedido no encontrado"));
+
+        Pedido pedido = optPedido.get();
+        double total = 0;
+        List<Long> nuevosIds = new ArrayList<>();
+
+        for (DetalleRequest d : request.getDetalles()) {
+            if (d.getProductoId() == null) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Producto ID nulo en la solicitud"));
+            }
+
+            Optional<Producto> optproducto = productoService.obtenerPorId(d.getProductoId());
+            if (optproducto.isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Producto no encontrado"));
+            }
+
+            Producto producto = optproducto.get();
+
+            // Busca si ya existe ese producto en el pedido
+            DetallePedido existente = pedido.getDetalles().stream()
+                    .filter(det -> det.getProducto().getId().equals(producto.getId()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (existente != null) {
+                // Ya existe: actualiza cantidad y subtotal
+                existente.setCantidad(d.getCantidad());
+                existente.setSubtotal(d.getSubtotal());
+                detallePedidoService.guardar(existente); // actualizar
+                nuevosIds.add(existente.getId());
+            } else {
+                // No existe: crea uno nuevo
+                DetallePedido nuevo = new DetallePedido();
+                nuevo.setProducto(producto);
+                nuevo.setCantidad(d.getCantidad());
+                nuevo.setSubtotal(d.getSubtotal());
+                nuevo.setPedido(pedido);
+                DetallePedido guardado = detallePedidoService.guardar(nuevo);
+                nuevosIds.add(guardado.getId());
+            }
+
+            total += d.getSubtotal();
+        }
+
+        Mesa mesa = pedido.getMesa();
+        mesa.setMontoTotal(total);
+        mesaService.guardar(mesa);
+
+        return ResponseEntity.ok(Map.of("success", true, "nuevosIds", nuevosIds));
+    }
+
 }
