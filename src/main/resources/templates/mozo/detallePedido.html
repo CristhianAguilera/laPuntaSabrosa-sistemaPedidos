@@ -215,6 +215,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     <td class="subtotal">${parseFloat(precio).toFixed(2)}</td>
                     <td class="cantidad">1</td>
                     <td>
+                        
                         <button type="button" class="btn btn-danger btnEliminar">
                             <ion-icon name="trash-outline"></ion-icon>
                         </button>
@@ -225,7 +226,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     actualizarMontoTotal();
                 }
 
-                //Evento para eliminar platos
+                //Evento para eliminar platos del pedido
                 pedidoTablaBody.addEventListener('click', e => {  // cualquier clic en la tabla y verifica si es un botón de eliminar
                     if (e.target.closest('.btnEliminar')) {
                         const fila = e.target.closest('tr');
@@ -233,7 +234,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                         const subtotalTd = fila.querySelector('.subtotal');
                         const precioUnitario = parseFloat(subtotalTd.textContent) / parseInt(cantidadTd.textContent);
 
-                        let cantidad = parseInt(cantidadTd.textContent); // Restar la unidad
+                        let cantidad = parseInt(cantidadTd.textContent); // Restar por unidad
                         cantidad--;
 
                         if (cantidad > 0) { // actualiza si es mayor a 0
