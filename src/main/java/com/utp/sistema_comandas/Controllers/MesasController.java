@@ -89,6 +89,29 @@ public class MesasController {
         return "/mozo/mesasMozo";
     }
 
+    @PostMapping("/verificarMozoMesa")
+    @ResponseBody
+    public ResponseEntity<?> verificarMozoMesa(@RequestBody Map<String, Object> payload, HttpSession session) {
+        int numeroMesa = Integer.parseInt(payload.get("numeroMesa").toString());
+        Optional<Mesa> optMesa = mesaService.buscarPorNumero(numeroMesa);
+
+        if (optMesa.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Mesa no encontrada"));
+        }
+
+        Mesa mesa = optMesa.get();
+        Usuario mozo = (Usuario) session.getAttribute("usuario");
+
+        boolean pertenece = mesa.getNombreMozo().equalsIgnoreCase(mozo.getNombre() + " " + mozo.getApellido());
+
+        if (!pertenece) {
+            return ResponseEntity.ok(Map.of("autorizado", false, "mensaje", "Esta mesa no te pertenece"));
+        }
+
+        return ResponseEntity.ok(Map.of("autorizado", true));
+    }
+
+
     @PostMapping("/aperturarMesa")
     @ResponseBody
     public ResponseEntity<?> aperturarMesa(@RequestBody Map<String, Object> payload, HttpSession session) {

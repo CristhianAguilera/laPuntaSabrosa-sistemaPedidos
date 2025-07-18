@@ -70,7 +70,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
                     <!--lateral derecha Pedido -->
                     <div class="col-md-8 bg-light p-2">
-
                         <div class="table-responsive">
                             <h5 class="text-center">Pedido</h5>
                             <table class="table table-sm">
@@ -85,7 +84,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                 <tbody id="pedidoTablaBody">
                                     <tr th:each="det : ${detalles}"
                                         th:attr="data-id=${det.id}, data-producto-id=${det.producto.id}">
-
                                         <td th:text="${det.producto.nombre}"></td>
                                         <td th:text="${det.subtotal}" class="subtotal"></td>
                                         <td th:text="${det.cantidad}" class="cantidad"></td>
@@ -114,11 +112,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                         <button class="btn btn-danger" th:attr="data-id=${pedido.id}" onclick="finalizarPedido(this)">
                             Finalizar Pedido y Cerrar Mesa
                         </button>
-
                     </div>
                 </div>
             </div>
-
         </main>
 
         <script>
