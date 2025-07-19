@@ -58,10 +58,11 @@ public class PedidosController {
     private DetallePedidoService detallePedidoService;
 
     @Autowired
-    private HistorialPedidoService historialPedidoService;
+    private boletaService boletaService;
 
     @Autowired
-    private boletaService boletaService;
+    private HistorialPedidoService historialPedidoService;
+
 
     @GetMapping("/mozo/detallePedido")
     public String detallePedido(@RequestParam("numeroMesa") int numeroMesa,
@@ -158,7 +159,59 @@ public class PedidosController {
         mesaService.guardar(mesa);
 
         return ResponseEntity.ok(Map.of("success", true, "nuevosIds", nuevosIds));
+
     }
+     @PostMapping("/mozo/finalizarPedido/{id}")
+    public ResponseEntity<?> finalizarPedido(@PathVariable Long id) {
+        Optional<Pedido> pedidoOpt = pedidoService.obtenerPorId(id);
+
+        if (pedidoOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Pedido no encontrado"));
+        }
+
+        Pedido pedido = pedidoOpt.get();
+
+        // Validación: el pedido no tiene productos
+        if (pedido.getDetalles() == null || pedido.getDetalles().isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "El pedido no tiene productos"));
+        }
+
+        // Validación: si ya está finalizado
+        if (pedido.isFinalizado()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("error", "El pedido ya ha sido finalizado"));
+        }
+
+        Mesa mesa = pedido.getMesa();
+
+        // 1. Finalizar pedido
+        pedido.setFinalizado(true);
+        pedidoService.crearPedido(pedido); // método para actualizar el pedido
+
+        // 2. Guardar en historial
+        HistorialPedido historial = new HistorialPedido();
+        historial.setFecha(LocalDateTime.now());
+        historial.setTotal(mesa.getMontoTotal());
+        historial.setMesa(mesa);
+        historial.setMozo(pedido.getMozo());
+        historial.setPedido(pedido);
+        historialPedidoService.guardar(historial);
+
+        // 3. Liberar la mesa
+        mesa.setOcupada(false);
+        mesa.setCantidadPersonas(0);
+        mesa.setMontoTotal(0.0);
+        mesa.setNombreCliente(null);
+        mesa.setNombreMozo(null);
+        mesaService.guardar(mesa);
+
+        return ResponseEntity.ok(Map.of(
+                "success", true,
+                "message", "Pedido finalizado correctamente y mesa liberada"));
+    }
+
+    /*---------------------------------------------------------------------------------------------------------------- */
+
     /*-------------------------------------------------Generar Boleta PDF--------------------------------------------------- */
     @GetMapping("/mozo/verificarPedido/{id}")
     @ResponseBody

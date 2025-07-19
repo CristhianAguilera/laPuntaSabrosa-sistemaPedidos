@@ -109,7 +109,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                             Generar Boleta
                         </button>
 
-                        <button class="btn btn-danger" th:attr="data-id=${pedido.id}" onclick="finalizarPedido(this)">
+                         <button class="btn btn-danger" th:attr="data-id=${pedido.id}" onclick="finalizarPedido(this)">
                             Finalizar Pedido y Cerrar Mesa
                         </button>
                     </div>
@@ -376,6 +376,55 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 });
             });
         </script>
+        <script>
+        function finalizarPedido(boton) {
+            const pedidoId = boton.getAttribute("data-id");
+
+            Swal.fire({
+                title: '¿Finalizar pedido?',
+                text: 'Haz Generado boleta de Pago?.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, finalizar',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#d33'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/mozo/finalizarPedido/${pedidoId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                PNotify.success({
+                                    text: data.message || "Pedido finalizado correctamente",
+                                    delay: 1500
+                                });
+                                setTimeout(() => {
+                                    window.location.href = "/mozo/mesasMozo";
+                                }, 1500);
+                            } else if (data.error) {
+                                PNotify.error({
+                                    text: data.error,
+                                    delay: 2000
+                                });
+                            }
+                        })
+                        .catch(() => {
+                            PNotify.error({
+                                text: "No se pudo conectar al servidor",
+                                delay: 2000
+                            });
+                        });
+                }
+            });
+        }
+    </script>
 
 
 
