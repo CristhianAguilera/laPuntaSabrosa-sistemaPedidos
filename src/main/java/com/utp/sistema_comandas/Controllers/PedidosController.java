@@ -34,6 +34,7 @@ import com.utp.sistema_comandas.service.HistorialPedidoService;
 import com.utp.sistema_comandas.service.MesaService;
 import com.utp.sistema_comandas.service.PedidoService;
 import com.utp.sistema_comandas.service.ProductoService;
+import com.utp.sistema_comandas.service.boletaService;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -58,6 +59,9 @@ public class PedidosController {
 
     @Autowired
     private HistorialPedidoService historialPedidoService;
+
+    @Autowired
+    private boletaService boletaService;
 
     @GetMapping("/mozo/detallePedido")
     public String detallePedido(@RequestParam("numeroMesa") int numeroMesa,
