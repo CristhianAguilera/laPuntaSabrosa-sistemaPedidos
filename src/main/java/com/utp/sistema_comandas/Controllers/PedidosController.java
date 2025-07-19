@@ -155,5 +155,34 @@ public class PedidosController {
 
         return ResponseEntity.ok(Map.of("success", true, "nuevosIds", nuevosIds));
     }
+    /*-------------------------------------------------Generar Boleta PDF--------------------------------------------------- */
+    @GetMapping("/mozo/verificarPedido/{id}")
+    @ResponseBody
+    public Map<String, Object> verificarPedido(@PathVariable Long id) {
+        Optional<Pedido> pedido = pedidoService.obtenerPorId(id);
+        boolean hayDetalles = pedido != null && !pedido.get().getDetalles().isEmpty();
+
+        Map<String, Object> resultado = new HashMap<>();
+        resultado.put("hayDetalles", hayDetalles);
+        return resultado;
+    }
+
+    @GetMapping("/mozo/boleta/{id}")
+    public void generarBoletaPDF(@PathVariable Long id, HttpServletResponse response) throws Exception {
+        Optional<Pedido> pedido = pedidoService.obtenerPorId(id);
+
+        if (pedido == null || pedido.get().getDetalles().isEmpty()) {
+            response.sendRedirect("/mozo/mesas"); // por seguridad
+            return;
+        }
+
+        byte[] pdfBytes = boletaService.generarBoletaPDF(pedido.get());
+
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition",
+                "attachment; filename=boleta_mesa_" + pedido.get().getMesa().getNumero() + ".pdf");
+        response.getOutputStream().write(pdfBytes);
+        response.getOutputStream().flush();
+    }
 
 }

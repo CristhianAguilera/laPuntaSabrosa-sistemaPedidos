@@ -116,6 +116,46 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 </div>
             </div>
         </main>
+        <script>
+        function generarBoleta(pedidoId) {
+            fetch(`/mozo/verificarPedido/${pedidoId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.hayDetalles) {
+                        new PNotify({
+                            title: 'Error',
+                            text: 'El pedido no contiene productos. No se puede generar la boleta.',
+                            type: 'error',
+                            styling: 'bootstrap3'
+                        });
+                    } else {
+                        // Confirmación con SweetAlert2
+                        Swal.fire({
+                            title: '¿Deseas generar la boleta?',
+                            text: 'Se descargará un PDF con el consumo actual.',
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonText: 'Sí, generar',
+                            cancelButtonText: 'Cancelar',
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#aaa'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = `/mozo/boleta/${pedidoId}`;
+                            }
+                        });
+                    }
+                })
+                .catch(error => {
+                    new PNotify({
+                        title: 'Error',
+                        text: 'Ocurrió un problema al verificar el pedido.',
+                        type: 'error',
+                        styling: 'bootstrap3'
+                    });
+                });
+        }
+    </script>
 
         <script>
             document.addEventListener('DOMContentLoaded', () => { // Dom cargado antes de ejecutar el script y html
