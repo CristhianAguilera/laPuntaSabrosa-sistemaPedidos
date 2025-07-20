@@ -6,7 +6,6 @@ import static org.mockito.Mockito.*;
 
 import com.utp.sistema_comandas.model.Mesa;
 import com.utp.sistema_comandas.repository.MesaRepository;
-import com.utp.sistema_comandas.service.MesaService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
