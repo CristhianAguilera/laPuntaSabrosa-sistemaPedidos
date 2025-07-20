@@ -211,7 +211,15 @@ public class PedidosController {
     }
 
     /*---------------------------------------------------------------------------------------------------------------- */
+     @GetMapping("/mozo/pedidosMozo")
+    public String cargarPedidos(HttpSession session, Model model) {
+        Usuario mozoSesion = (Usuario) session.getAttribute("usuario");
 
+        List<Pedido> Pedidos = pedidoService.obtenerPedidosPorMozo(mozoSesion);
+        model.addAttribute("listaPedidos", Pedidos);
+
+        return "/mozo/pedidosMozo";
+    }
     /*-------------------------------------------------Generar Boleta PDF--------------------------------------------------- */
     @GetMapping("/mozo/verificarPedido/{id}")
     @ResponseBody
@@ -241,5 +249,7 @@ public class PedidosController {
         response.getOutputStream().write(pdfBytes);
         response.getOutputStream().flush();
     }
+
+    
 
 }
